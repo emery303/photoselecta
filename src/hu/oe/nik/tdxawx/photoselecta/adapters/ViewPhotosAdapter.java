@@ -59,7 +59,7 @@ public class ViewPhotosAdapter extends BaseAdapter {
 		imageView.setLayoutParams(new GridView.LayoutParams(imageWidth,	imageWidth));
 		imageView.setImageBitmap(image);
 
-		imageView.setOnClickListener(new OnImageClickListener(position));
+		//imageView.setOnClickListener(new OnImageClickListener(position));
 
 		return imageView;
 	}
