@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">PhotoSelecta</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="dashboard_hello">Hello there. This is the dashboard. Not much at the moment, but hey, we have to start somewhere, don\'t we? :) Now try the swipe navigation above! It\'s cool :)</string>
+	<string name="photolist_hello">Here be a list of photos one day. Maybe today!!</string>
+	<string name="takenewphoto">Take photos</string>
+	<string name="launching_camera">Launching Camera...</string>
+	<string name="shutter_button_text">Take picture!</string>
+    
+</resources>

@@ -1,0 +1,26 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory 
+        android:title="Photo sessions">
+        <CheckBoxPreference 
+           android:title="Only keep best photos"
+           android:key="onlykeepbest"
+           android:defaultValue="0"
+           android:summary="Only keeps the best photos in a session, the rest is discarded automatically"
+           />
+        <CheckBoxPreference 
+           android:title="Auto quality check"
+           android:key="autoqualitycheck"
+           android:defaultValue="0"
+           android:summary="Automatically check which photos are the best - when this is enabled, you don't see a popup when you start a new photo session"
+           />
+    </PreferenceCategory>
+    <PreferenceCategory 
+        android:title="Review photos screen">
+        <CheckBoxPreference 
+           android:title="One click deletion"
+           android:key="oneclickdelete"
+           android:defaultValue="0"
+           android:summary="Delete unneeded photos with one click on the review screen instead of swiping"
+           />
+    </PreferenceCategory>
+</PreferenceScreen>

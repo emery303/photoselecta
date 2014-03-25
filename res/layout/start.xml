@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:layout_gravity="center"
+    android:layout_margin="0dp"
+    android:alignmentMode="alignBounds"
+    android:background="#395898"
+    android:columnCount="2"
+    android:orientation="vertical"
+    android:rowCount="3"
+    android:textAlignment="center"
+    android:textColor="#ffffff"
+    android:textStyle="bold" >
+
+    <ImageButton
+        android:id="@+id/start_takenewphotos"
+        android:layout_column="0"
+        android:layout_gravity="center|top"
+        android:layout_row="0"
+        android:layout_marginTop="40dp"
+        android:layout_marginLeft="40dp"
+        android:background="@drawable/start_takenewphotos" />
+
+    <ImageButton
+        android:id="@+id/start_categories"
+        android:layout_column="1"
+        android:layout_gravity="center|top"
+        android:layout_row="0"
+        android:layout_marginTop="40dp"
+        android:layout_marginRight="20dp"
+        android:background="@drawable/start_categories" />
+
+    <ImageButton
+        android:id="@+id/start_viewphotos"
+        android:layout_column="0"
+        android:layout_gravity="center|top"
+        android:layout_row="1"
+        android:layout_marginTop="25dp"
+        android:background="@drawable/start_viewphotos" />
+
+    <ImageButton
+        android:id="@+id/start_sendphotos"
+        android:layout_column="1"
+        android:layout_gravity="center|top"
+        android:layout_row="1"
+        android:layout_marginTop="25dp"
+        android:background="@drawable/start_sendphotos" />
+
+    <ImageButton
+        android:id="@+id/start_settings"
+        android:layout_column="0"
+        android:layout_gravity="center|top"
+        android:layout_row="2"
+        android:layout_marginTop="25dp"
+        android:background="@drawable/start_settings" />
+
+    <ImageButton
+        android:id="@+id/start_exit"
+        android:layout_column="1"
+        android:layout_gravity="center|top"
+        android:layout_row="2"
+        android:layout_marginTop="25dp"
+        android:background="@drawable/start_exit" />
+
+</GridLayout>
