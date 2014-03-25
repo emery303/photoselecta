@@ -1,3 +1,4 @@
+git remote update
 git add -A
 git commit -m "automatic update"
 git push -f origin master
