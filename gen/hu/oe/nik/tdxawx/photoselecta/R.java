@@ -47,7 +47,7 @@ public final class R {
         public static final int analyzerprogress=0x7f0b0000;
         public static final int analyzertext=0x7f0b0001;
         public static final int btn_close_photo=0x7f0b0009;
-        public static final int btn_deletephoto=0x7f0b0012;
+        public static final int btn_deletephoto=0x7f0b0013;
         public static final int btn_shutter=0x7f0b0005;
         public static final int cameraview=0x7f0b0003;
         public static final int camsurface=0x7f0b0004;
@@ -67,7 +67,7 @@ public final class R {
         public static final int start_settings=0x7f0b0010;
         public static final int start_takenewphotos=0x7f0b000c;
         public static final int start_viewphotos=0x7f0b000e;
-        public static final int view_photos_grid=0x7f0b0013;
+        public static final int view_photos_grid=0x7f0b0012;
     }
     public static final class layout {
         public static final int analyzer=0x7f030000;

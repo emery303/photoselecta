@@ -23,4 +23,13 @@
            android:summary="Delete unneeded photos with one click on the review screen instead of swiping"
            />
     </PreferenceCategory>
+    <PreferenceCategory 
+        android:title="Photo list">
+        <CheckBoxPreference 
+           android:title="Fast delete"
+           android:key="fastdelete"
+           android:defaultValue="0"
+           android:summary="Delete a photo instantly when dropped to trashcan"
+           />
+    </PreferenceCategory>
 </PreferenceScreen>

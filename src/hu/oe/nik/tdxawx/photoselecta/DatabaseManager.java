@@ -67,6 +67,16 @@ public class DatabaseManager extends SQLiteOpenHelper{
     	  }
       }
       
+      public String getPhotoPathById(int id) {
+    	  if (this.database != null) {
+    		  Cursor cur = database.rawQuery("SELECT path FROM photos WHERE id = '"+String.valueOf(id)+"'", null);
+    		  cur.moveToFirst();
+    		  return cur.getString(0);
+    	  } else {
+    		  return "";
+    	  }
+      }
+      
       public int getTagIdByName(String tagname) {
     	  if (this.database != null) {
     		  Cursor cur = database.rawQuery("SELECT id FROM tags WHERE name = '"+tagname+"'", null);
@@ -140,22 +150,33 @@ public class DatabaseManager extends SQLiteOpenHelper{
       }
       
       public boolean deletePhotoByPath(String path) {
+    	  Log.d("PSEL-DB", "*** Photo deleted by path " + String.valueOf(path) +"***");
     	  if (this.database != null) {
     		  Cursor cur = database.rawQuery("DELETE FROM photos WHERE path = '"+path+"'", null);
-    		  if (cur != null)
+    		  if (cur != null) {
+    			  File file = new File(path);
+    			  if (file.exists()) {
+    				  file.delete();
+    			  }
     			  return true;
-    		  else
+    		  } else
     			  return false;
     	  } else
     		  return false;
       }
       
       public boolean deletePhotoById(int id) {
+    	  Log.d("PSEL-DB", "*** Photo deleted by ID #" + String.valueOf(id) +"***");
+    	  String path = this.getPhotoPathById(id);
     	  if (this.database != null) {
     		  Cursor cur = database.rawQuery("DELETE FROM photos WHERE id = '"+id+"'", null);
-    		  if (cur != null)
+    		  if (cur != null) {
+    			  File file = new File(path);
+    			  if (file.exists()) {
+    				  file.delete();
+    			  }
     			  return true;
-    		  else
+    		  } else
     			  return false;
     	  } else
     		  return false;
@@ -272,8 +293,8 @@ public class DatabaseManager extends SQLiteOpenHelper{
 				  File f = new File(path);
 		    	  if(!f.exists()) {
 		    		  int photo_id = cur.getInt(0);
-		    		  database.execSQL("DELETE FROM tag2photo WHERE photo_id = '"+String.valueOf(photo_id)+"');");
-		    		  database.execSQL("DELETE FROM photos WHERE id = '"+String.valueOf(photo_id)+"');");
+		    		  database.execSQL("DELETE FROM tag2photo WHERE photo_id = '"+String.valueOf(photo_id)+"';");
+		    		  database.execSQL("DELETE FROM photos WHERE id = '"+String.valueOf(photo_id)+"';");
 		    	  }
 			   } while (cur.moveToNext());
 		   }	

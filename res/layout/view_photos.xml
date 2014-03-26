@@ -5,21 +5,20 @@
     android:layout_height="fill_parent"
     android:orientation="vertical"
     >
+    
+	<hu.oe.nik.tdxawx.photoselecta.utility.DraggableGridView
+	    android:id="@+id/view_photos_grid"
+	    android:layout_height="fill_parent"
+	    android:layout_width="fill_parent"
+	    />
+	
 	<ImageView
 	    android:id="@+id/btn_deletephoto"
 	    android:src="@drawable/deletephoto"
-	    android:layout_gravity="bottom"
 	    android:layout_width="fill_parent"
 	    android:layout_height="wrap_content"
 	    android:background="#2c467a"
 	    android:padding="10dp"
-	    android:alpha="0.5"
-	    />
-	<com.animoto.android.views.DraggableGridView
-	    xmlns:android="http://schemas.android.com/apk/res/android" 
-	    android:id="@+id/view_photos_grid"
-	    android:layout_below="@id/btn_deletephoto" 
-	    android:layout_height="fill_parent"
-	    android:layout_width="fill_parent"
+	    android:alpha="0.0"
 	    />
 </RelativeLayout>
