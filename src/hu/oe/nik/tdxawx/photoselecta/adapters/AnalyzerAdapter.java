@@ -9,6 +9,7 @@ import hu.oe.nik.tdxawx.photoselecta.SwipeListener;
 import java.io.File;
 import java.util.ArrayList;
 
+import android.app.Application;
 import android.content.Context;
 import android.gesture.GestureStroke;
 import android.gesture.GestureUtils;

@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#008bf6"
+    android:background="#395898"
     tools:context=".MainActivity" >
 
     <ProgressBar
@@ -23,16 +23,22 @@
         android:textColor="#fff"
         android:textSize="32sp" />
 
-    <GridView
+    <hu.oe.nik.tdxawx.photoselecta.utility.DraggableGridView
         android:id="@+id/analyzergrid"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:gravity="center"
-        android:numColumns="2"
-        android:textAlignment="center" >
-
-    </GridView>
+        android:gravity="center" />
+    
+	<ImageView
+	    android:id="@+id/btn_deletephoto"
+	    android:src="@drawable/deletephoto"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:background="#2c467a"
+	    android:padding="10dp"
+	    android:alpha="0.0"
+	    />
  
 </RelativeLayout>

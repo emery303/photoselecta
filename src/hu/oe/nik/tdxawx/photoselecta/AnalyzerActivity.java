@@ -1,6 +1,7 @@
 package hu.oe.nik.tdxawx.photoselecta;
 
 import hu.oe.nik.tdxawx.photoselecta.adapters.AnalyzerAdapter;
+import hu.oe.nik.tdxawx.photoselecta.utility.DraggableGridView;
 
 import java.util.ArrayList;
 import android.app.Activity;
@@ -10,6 +11,7 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.ContextMenu;
@@ -18,7 +20,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.GridView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,6 +38,10 @@ public class AnalyzerActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.analyzer);
+        
+        TextView txt = (TextView) findViewById(R.id.analyzertext);
+        Typeface HelveticaNeueCB = Typeface.createFromAsset(getAssets(), "HelveticaNeue-CondensedBold.ttf");
+        txt.setTypeface(HelveticaNeueCB);
         
         setTitle("Review photos");
         
@@ -86,8 +91,13 @@ public class AnalyzerActivity extends Activity {
         					
         					if (progress >= 100) {
         						photos.get(best).bestInSession = true;
-        						GridView g = (GridView)findViewById(R.id.analyzergrid);
-        		                g.setAdapter(new AnalyzerAdapter(AnalyzerActivity.this, photos));
+        						DraggableGridView g = (DraggableGridView)findViewById(R.id.analyzergrid);
+        						AnalyzerAdapter adapter = new AnalyzerAdapter(AnalyzerActivity.this, photos);
+        						for (int i = 0; i < adapter.getCount(); i++) {
+        							g.addView(adapter.getView(i, null, g));
+        							g.addPath(String.valueOf(adapter.getItem(i)));
+        						}
+        		                //g.setAdapter(new AnalyzerAdapter(AnalyzerActivity.this, photos));
         		                registerForContextMenu(g);
         		                //Toast.makeText(AnalyzerActivity.this, "Click the photos you want to delete!", Toast.LENGTH_LONG).show();
         		                pb.setVisibility(8);
