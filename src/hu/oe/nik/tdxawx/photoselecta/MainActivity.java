@@ -17,6 +17,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
@@ -34,6 +35,7 @@ import android.view.animation.RotateAnimation;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -45,113 +47,25 @@ public class MainActivity extends FragmentActivity {
 	
 	public SharedPreferences _preferences;
 	
+	private ImageView splashpic;
+	private TextView splashloader;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		
+		super.onCreate(savedInstanceState);
+		
+		setContentView(R.layout.splash);
+        
+        splashpic = (ImageView)findViewById(R.id.splashpic);
+        splashloader = (TextView)findViewById(R.id.splashloader);
+        splashloader.setScaleX(0.0f);
 		
 		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		this._preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 		
-		// --- create image container folder if not exists
-		File cdir = new File(Environment.getExternalStorageDirectory().getAbsolutePath().concat("/photoselecta")); 
-		if (!cdir.exists()) {
-			cdir.mkdirs();
-		}
-		File tdir = new File(Environment.getExternalStorageDirectory().getAbsolutePath().concat("/photoselecta/thumbs")); 
-		if (!tdir.exists()) {
-			tdir.mkdirs();
-		}
-		
-		
-		// open database and check for DB <-> FS inconsistency
-		db = new DatabaseManager(getApplicationContext());
-		db.checkFiles();
-		// ---
-		
-		_photos = readPhotosFromDevice(PHOTOS_ORDER);
-		
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.start);
-		
-		//PSFragmentAdapter adapter = new PSFragmentAdapter(getSupportFragmentManager());
-		
-		//ViewPager pager = (ViewPager) findViewById(R.id.viewpager);
-		//pager.setAdapter(adapter);
-		
-		//pager.setCurrentItem(0)
-		//updateDashboard();
-		ImageButton btn_exit = (ImageButton)findViewById(R.id.start_exit);
-		ImageButton btn_takenewphotos = (ImageButton)findViewById(R.id.start_takenewphotos);
-		ImageButton btn_viewphotos = (ImageButton)findViewById(R.id.start_viewphotos);
-		ImageButton btn_settings = (ImageButton)findViewById(R.id.start_settings);
-		
-		btn_exit.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) { 
-				v.startAnimation( (Animation)AnimationUtils.loadAnimation(v.getContext(), R.anim.bounce) );
-				new AlertDialog.Builder(MainActivity.this)
-		        .setIcon(android.R.drawable.ic_dialog_alert)
-		        .setTitle("Exit application")
-		        .setMessage("Are you sure you want to exit?")
-		        .setPositiveButton("Yes", new DialogInterface.OnClickListener()
-		        {
-	        	@Override
-		        public void onClick(DialogInterface dialog, int which) {
-		            finish();    
-		        }
+		new SplashScreen().execute();
 
-		    	})
-		    .setNegativeButton("No", null)
-		    .show();
-			}
-		});
-		
-		btn_takenewphotos.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				v.startAnimation( (Animation)AnimationUtils.loadAnimation(v.getContext(), R.anim.bounce) );
-				final Intent cam = new Intent(MainActivity.this, CameraActivity.class);
-				new AlertDialog.Builder(MainActivity.this) 
-				.setTitle("Choose session mode")
-				.setItems(new CharSequence[] {"Sharpness mode", "Category mode"}, new DialogInterface.OnClickListener() {
-				    @Override
-				    public void onClick(DialogInterface dialog, int which) {
-				        switch (which) {
-				        case 0:
-				        	cam.putExtra("session_mode", "sharpness");
-				        	startActivityForResult(cam, 1001);
-				        	break;
-				        case 1:
-				        	cam.putExtra("session_mode", "category");
-				        	startActivityForResult(cam, 1001);
-				        	break;
-			        	default:
-			        		break;
-				        }
-				    }
-				}).show();
-			}
-		});
-	
-		btn_viewphotos.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				v.startAnimation( (Animation)AnimationUtils.loadAnimation(v.getContext(), R.anim.bounce) );
-				Intent viewphotos = new Intent(MainActivity.this, ViewPhotosActivity.class);
-				startActivityForResult(viewphotos, 1002);
-			}
-		});
-		
-		btn_settings.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				v.startAnimation( (Animation)AnimationUtils.loadAnimation(v.getContext(), R.anim.bounce) );
-				Intent settings = new Intent(MainActivity.this, SettingsActivity.class);
-				startActivityForResult(settings, 1003);
-			}
-		});
 	}
 	
 	@Override
@@ -225,6 +139,142 @@ public class MainActivity extends FragmentActivity {
 	public static void refreshPhotos() {
 		_photos.clear();
 		_photos = readPhotosFromDevice(PHOTOS_ORDER);
+	}
+	
+	private class SplashScreen extends AsyncTask<Void, Integer, Void>  
+    {      
+        @Override  
+        protected Void doInBackground(Void... params)  
+        {    
+        	
+        	// --- create image container folder if not exists
+    		File cdir = new File(Environment.getExternalStorageDirectory().getAbsolutePath().concat("/photoselecta")); 
+    		if (!cdir.exists()) {
+    			cdir.mkdirs();
+    		}
+    		File tdir = new File(Environment.getExternalStorageDirectory().getAbsolutePath().concat("/photoselecta/thumbs")); 
+    		if (!tdir.exists()) {
+    			tdir.mkdirs();
+    		}
+    		
+    		// open database and check for DB <-> FS inconsistency
+    		db = new DatabaseManager(getApplicationContext());
+    		db.checkFiles();
+    		// ---
+    		
+    		_photos = readPhotosFromDevice(PHOTOS_ORDER);
+        	
+        	// TODO: proper loading please
+            try  
+            {    
+                synchronized (this)  
+                {    
+                    int counter = 0;    
+                    while(counter <= 100)  
+                    {    
+                        this.wait(25);    
+                        counter++;    
+                        publishProgress(counter);  
+                    }  
+                }  
+            }  
+            catch (InterruptedException e)  
+            {  
+                e.printStackTrace();  
+            }  
+            return null;  
+        }  
+  
+        @Override  
+        protected void onProgressUpdate(Integer... values)  
+        {  
+        	splashloader.setScaleX(((float)values[0])/100);
+        }  
+    
+        @Override  
+        protected void onPostExecute(Void result)  
+        {    
+            InitStartScreen();
+        }  
+    }
+	
+	public void InitStartScreen() {
+		
+		setContentView(R.layout.start);
+		
+		ImageButton btn_exit = (ImageButton)findViewById(R.id.start_exit);
+		ImageButton btn_takenewphotos = (ImageButton)findViewById(R.id.start_takenewphotos);
+		ImageButton btn_viewphotos = (ImageButton)findViewById(R.id.start_viewphotos);
+		ImageButton btn_settings = (ImageButton)findViewById(R.id.start_settings);
+		
+		btn_exit.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) { 
+				v.startAnimation( (Animation)AnimationUtils.loadAnimation(v.getContext(), R.anim.bounce) );
+				new AlertDialog.Builder(MainActivity.this)
+		        .setIcon(android.R.drawable.ic_dialog_alert)
+		        .setTitle("Exit application")
+		        .setMessage("Are you sure you want to exit?")
+		        .setPositiveButton("Yes", new DialogInterface.OnClickListener()
+		        {
+	        	@Override
+		        public void onClick(DialogInterface dialog, int which) {
+		            finish();    
+		        }
+
+		    	})
+		    .setNegativeButton("No", null)
+		    .show();
+			}
+		});
+		
+		btn_takenewphotos.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				v.startAnimation( (Animation)AnimationUtils.loadAnimation(v.getContext(), R.anim.bounce) );
+				final Intent cam = new Intent(MainActivity.this, CameraActivity.class);
+				new AlertDialog.Builder(MainActivity.this) 
+				.setTitle("Choose session mode")
+				.setItems(new CharSequence[] {"Sharpness mode", "Category mode"}, new DialogInterface.OnClickListener() {
+				    @Override
+				    public void onClick(DialogInterface dialog, int which) {
+				        switch (which) {
+				        case 0:
+				        	cam.putExtra("session_mode", "sharpness");
+				        	startActivityForResult(cam, 1001);
+				        	break;
+				        case 1:
+				        	cam.putExtra("session_mode", "category");
+				        	startActivityForResult(cam, 1001);
+				        	break;
+			        	default:
+			        		break;
+				        }
+				    }
+				}).show();
+			}
+		});
+	
+		btn_viewphotos.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				v.startAnimation( (Animation)AnimationUtils.loadAnimation(v.getContext(), R.anim.bounce) );
+				Intent viewphotos = new Intent(MainActivity.this, ViewPhotosActivity.class);
+				startActivityForResult(viewphotos, 1002);
+			}
+		});
+		
+		btn_settings.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				v.startAnimation( (Animation)AnimationUtils.loadAnimation(v.getContext(), R.anim.bounce) );
+				Intent settings = new Intent(MainActivity.this, SettingsActivity.class);
+				startActivityForResult(settings, 1003);
+			}
+		});
 	}
 	
 }

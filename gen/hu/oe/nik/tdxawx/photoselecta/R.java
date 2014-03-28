@@ -30,17 +30,18 @@ public final class R {
         public static final int demoimage=0x7f020002;
         public static final int ic_launcher=0x7f020003;
         public static final int icon_opts_settings=0x7f020004;
-        public static final int sample_blur1=0x7f020005;
-        public static final int sample_blur2=0x7f020006;
-        public static final int start_categories=0x7f020007;
-        public static final int start_exit=0x7f020008;
-        public static final int start_photofolder=0x7f020009;
-        public static final int start_sendphotos=0x7f02000a;
-        public static final int start_settings=0x7f02000b;
-        public static final int start_takenewphotos=0x7f02000c;
-        public static final int start_viewphotos=0x7f02000d;
-        public static final int takephotos=0x7f02000e;
-        public static final int tick=0x7f02000f;
+        public static final int photoselecta_splash=0x7f020005;
+        public static final int sample_blur1=0x7f020006;
+        public static final int sample_blur2=0x7f020007;
+        public static final int start_categories=0x7f020008;
+        public static final int start_exit=0x7f020009;
+        public static final int start_photofolder=0x7f02000a;
+        public static final int start_sendphotos=0x7f02000b;
+        public static final int start_settings=0x7f02000c;
+        public static final int start_takenewphotos=0x7f02000d;
+        public static final int start_viewphotos=0x7f02000e;
+        public static final int takephotos=0x7f02000f;
+        public static final int tick=0x7f020010;
     }
     public static final class id {
         public static final int analyzergrid=0x7f0b0002;
@@ -53,21 +54,23 @@ public final class R {
         public static final int camsurface=0x7f0b0005;
         public static final int crosshair=0x7f0b0007;
         public static final int fullscreen_photo_pager=0x7f0b0008;
-        public static final int menu_settings=0x7f0b0014;
+        public static final int menu_settings=0x7f0b0016;
         public static final int photoGrid=0x7f0b000c;
         public static final int photo_image=0x7f0b0009;
-        public static final int photo_item_menu_back=0x7f0b0018;
-        public static final int photo_item_menu_category=0x7f0b0015;
-        public static final int photo_item_menu_delete=0x7f0b0016;
-        public static final int photo_item_menu_share=0x7f0b0017;
+        public static final int photo_item_menu_back=0x7f0b001a;
+        public static final int photo_item_menu_category=0x7f0b0017;
+        public static final int photo_item_menu_delete=0x7f0b0018;
+        public static final int photo_item_menu_share=0x7f0b0019;
         public static final int photolistlayout=0x7f0b000b;
-        public static final int start_categories=0x7f0b000e;
-        public static final int start_exit=0x7f0b0012;
-        public static final int start_sendphotos=0x7f0b0010;
-        public static final int start_settings=0x7f0b0011;
-        public static final int start_takenewphotos=0x7f0b000d;
-        public static final int start_viewphotos=0x7f0b000f;
-        public static final int view_photos_grid=0x7f0b0013;
+        public static final int splashloader=0x7f0b000e;
+        public static final int splashpic=0x7f0b000d;
+        public static final int start_categories=0x7f0b0010;
+        public static final int start_exit=0x7f0b0014;
+        public static final int start_sendphotos=0x7f0b0012;
+        public static final int start_settings=0x7f0b0013;
+        public static final int start_takenewphotos=0x7f0b000f;
+        public static final int start_viewphotos=0x7f0b0011;
+        public static final int view_photos_grid=0x7f0b0015;
     }
     public static final class layout {
         public static final int analyzer=0x7f030000;
@@ -75,8 +78,9 @@ public final class R {
         public static final int fullscreen_photo=0x7f030002;
         public static final int fullscreen_photo_image=0x7f030003;
         public static final int photolist=0x7f030004;
-        public static final int start=0x7f030005;
-        public static final int view_photos=0x7f030006;
+        public static final int splash=0x7f030005;
+        public static final int start=0x7f030006;
+        public static final int view_photos=0x7f030007;
     }
     public static final class menu {
         public static final int main=0x7f0a0000;
