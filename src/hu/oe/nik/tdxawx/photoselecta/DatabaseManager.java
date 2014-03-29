@@ -61,7 +61,9 @@ public class DatabaseManager extends SQLiteOpenHelper{
     	  if (this.database != null) {
     		  Cursor cur = database.rawQuery("SELECT id FROM photos WHERE path = '"+path+"'", null);
     		  cur.moveToFirst();
-    		  return cur.getInt(0);
+    		  int result = cur.getInt(0);
+    		  cur.close();
+    		  return result;
     	  } else {
     		  return 0;
     	  }
@@ -71,7 +73,9 @@ public class DatabaseManager extends SQLiteOpenHelper{
     	  if (this.database != null) {
     		  Cursor cur = database.rawQuery("SELECT path FROM photos WHERE id = '"+String.valueOf(id)+"'", null);
     		  cur.moveToFirst();
-    		  return cur.getString(0);
+    		  String result = cur.getString(0);
+    		  cur.close();
+    		  return result;
     	  } else {
     		  return "";
     	  }
@@ -81,7 +85,9 @@ public class DatabaseManager extends SQLiteOpenHelper{
     	  if (this.database != null) {
     		  Cursor cur = database.rawQuery("SELECT id FROM tags WHERE name = '"+tagname+"'", null);
     		  cur.moveToFirst();
-    		  return cur.getInt(0);
+    		  int result = cur.getInt(0);
+    		  cur.close();
+    		  return result;
     	  } else {
     		  return 0;
     	  }
@@ -91,10 +97,15 @@ public class DatabaseManager extends SQLiteOpenHelper{
     	  if (this.database != null) {
     		  Cursor cur = database.rawQuery("SELECT session_id FROM photos ORDER BY session_id DESC LIMIT 1", null);
     		  cur.moveToFirst();
-    		  if (cur.getCount() > 0)
-    			  return cur.getInt(0);
-    		  else
+    		  
+    		  if (cur.getCount() > 0) {
+    			  int result = cur.getInt(0);
+    			  cur.close();
+    			  return result;
+    		  } else {
+    			  cur.close();
     			  return 0;
+    		  }
     	  } else {
     		  return 0;
     	  }
@@ -117,10 +128,12 @@ public class DatabaseManager extends SQLiteOpenHelper{
       public boolean setPhotoCategory(int photo_id, int category_id) {
     	  if (this.database != null) {
     		  Cursor cur = database.rawQuery("UPDATE photos SET category_id = '"+String.valueOf(category_id)+"' WHERE id = '"+String.valueOf(photo_id)+"'", null);
-    		  if (cur != null)
+    		  if (cur != null) {
+    			  cur.close();
     			  return true;
-    		  else
+    		  } else {
     			  return false;
+    		  }
     	  } else
     		  return false;
       }
@@ -129,10 +142,12 @@ public class DatabaseManager extends SQLiteOpenHelper{
     	  if (this.database != null) {
     		  database.rawQuery("DELETE FROM tags WHERE name = '"+tagname+"'", null);
     		  Cursor cur = database.rawQuery("INSERT INTO tags (name) VALUES ('"+tagname+"')", null);
-    		  if (cur != null)
+    		  if (cur != null) {
+    			  cur.close();
     			  return true;
-    		  else
+    		  } else {
     			  return false;
+    		  }
     	  } else
     		  return false;
       }
@@ -141,10 +156,12 @@ public class DatabaseManager extends SQLiteOpenHelper{
     	  if (this.database != null) {
     		  database.rawQuery("DELETE FROM tag2photo WHERE tag_id = '"+String.valueOf(tag_id)+"' AND photo_id = '"+String.valueOf(photo_id)+"'", null);
     		  Cursor cur = database.rawQuery("INSERT INTO tag2photo (photo_id, tag_id) VALUES ("+String.valueOf(photo_id)+", "+String.valueOf(tag_id)+")", null);
-    		  if (cur != null)
+    		  if (cur != null) {
+    			  cur.close();
     			  return true;
-    		  else
+    		  } else {
     			  return false;
+    		  }
     	  } else
     		  return false;
       }
@@ -154,13 +171,16 @@ public class DatabaseManager extends SQLiteOpenHelper{
     	  if (this.database != null) {
     		  Cursor cur = database.rawQuery("DELETE FROM photos WHERE path = '"+path+"'", null);
     		  if (cur != null) {
+    			  cur.close();
     			  File file = new File(path);
     			  if (file.exists()) {
     				  file.delete();
     			  }
     			  return true;
-    		  } else
+    		  } else {
+    			  cur.close();
     			  return false;
+    		  }
     	  } else
     		  return false;
       }
@@ -171,13 +191,16 @@ public class DatabaseManager extends SQLiteOpenHelper{
     	  if (this.database != null) {
     		  Cursor cur = database.rawQuery("DELETE FROM photos WHERE id = '"+id+"'", null);
     		  if (cur != null) {
+    			  cur.close();
     			  File file = new File(path);
     			  if (file.exists()) {
     				  file.delete();
     			  }
     			  return true;
-    		  } else
+    		  } else {
+    			  cur.close();
     			  return false;
+    		  }
     	  } else
     		  return false;
       }
@@ -193,6 +216,7 @@ public class DatabaseManager extends SQLiteOpenHelper{
 		    	   result[n] = cur.getString(0);
 		    	   n++;
 		       } while (cur.moveToNext());
+		       cur.close();
 		       return result;
 		  }
 		  return empty;
@@ -212,6 +236,7 @@ public class DatabaseManager extends SQLiteOpenHelper{
 			    	   result[n] = cur.getString(0);
 			    	   n++;
 			       } while (cur.moveToNext());
+			       cur.close();
 			       return result;
 		       }
 		  }
@@ -253,6 +278,7 @@ public class DatabaseManager extends SQLiteOpenHelper{
 				   database.execSQL("INSERT INTO categories (name) VALUES ('Clouds');");
 				   database.execSQL("INSERT INTO categories (name) VALUES ('Text');");
 		       }
+		       cur.close();
 		   }		
 		   
 		   // `tags`
@@ -282,11 +308,12 @@ public class DatabaseManager extends SQLiteOpenHelper{
 				   database.execSQL("INSERT INTO tags (name) VALUES ('Indoors');");
 				   database.execSQL("INSERT INTO tags (name) VALUES ('Friends');");
 		       }
+		       cur2.close();
 		   }
       }
       
       public void checkFiles() {
-    	  Cursor cur = database.rawQuery("SELECT * FROM photos", null);
+    	   Cursor cur = database.rawQuery("SELECT * FROM photos", null);
 		   if (cur.moveToFirst()) {
 			   do {
 				  String path = cur.getString(2);
@@ -297,7 +324,9 @@ public class DatabaseManager extends SQLiteOpenHelper{
 		    		  database.execSQL("DELETE FROM photos WHERE id = '"+String.valueOf(photo_id)+"';");
 		    	  }
 			   } while (cur.moveToNext());
-		   }	
+		   }
+		   if (cur != null)
+			   cur.close();
       }
       
       @Override
