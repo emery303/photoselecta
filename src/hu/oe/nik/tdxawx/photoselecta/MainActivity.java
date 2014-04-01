@@ -145,8 +145,24 @@ public class MainActivity extends FragmentActivity {
     {      
         @Override  
         protected Void doInBackground(Void... params)  
-        {    
-        	
+        {   
+        	try  
+            {    
+                synchronized (this)  
+                {    
+                    int counter = 0;    
+                    while(counter <= 10)  
+                    {    
+                        this.wait(50);
+                        counter++;
+                    }  
+                }  
+            }  
+            catch (InterruptedException e)  
+            {  
+                e.printStackTrace();  
+            }
+        	publishProgress(0); 
         	// --- create image container folder if not exists
     		File cdir = new File(Environment.getExternalStorageDirectory().getAbsolutePath().concat("/photoselecta")); 
     		if (!cdir.exists()) {
@@ -156,32 +172,15 @@ public class MainActivity extends FragmentActivity {
     		if (!tdir.exists()) {
     			tdir.mkdirs();
     		}
-    		
+    		publishProgress(25);
     		// open database and check for DB <-> FS inconsistency
     		db = new DatabaseManager(getApplicationContext());
     		db.checkFiles();
     		// ---
-    		
+    		publishProgress(50);
     		_photos = readPhotosFromDevice(PHOTOS_ORDER);
         	
-        	// TODO: proper loading please
-            try  
-            {    
-                synchronized (this)  
-                {    
-                    int counter = 0;    
-                    while(counter <= 100)  
-                    {    
-                        this.wait(25);    
-                        counter++;    
-                        publishProgress(counter);  
-                    }  
-                }  
-            }  
-            catch (InterruptedException e)  
-            {  
-                e.printStackTrace();  
-            }  
+            publishProgress(100);
             return null;  
         }  
   
