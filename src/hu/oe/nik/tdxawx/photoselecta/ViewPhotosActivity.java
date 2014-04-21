@@ -56,7 +56,11 @@ public class ViewPhotosActivity extends Activity {
 		grid.setOnTouchListener(new OnTouchListener() {
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
-				deletebutton.setAlpha(0.5f);
+				if (v == null) {
+					Toast.makeText(getApplicationContext(), "null", Toast.LENGTH_SHORT).show();
+				}
+				//if (v.toString() != "")
+					//deletebutton.setAlpha(0.5f);
 				return false;
 			}
 		});
@@ -96,10 +100,12 @@ public class ViewPhotosActivity extends Activity {
 		grid.setDeleteHoverListener(new OnTouchListener() {
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
-				if (event != null && (int)event.getY() < 192)
-					deletebutton.setAlpha(0.9f);
-				else
-					deletebutton.setAlpha(0.5f);
+				if (v.toString() != "") {
+					if (event != null && (int)event.getY() < 192)
+						deletebutton.setAlpha(0.9f);
+					else
+						deletebutton.setAlpha(0.25f);
+				}
 				return false;
 			}
 		});

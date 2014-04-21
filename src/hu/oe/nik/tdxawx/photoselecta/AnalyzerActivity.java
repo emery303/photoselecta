@@ -1,7 +1,9 @@
 package hu.oe.nik.tdxawx.photoselecta;
 
 import hu.oe.nik.tdxawx.photoselecta.adapters.AnalyzerAdapter;
+import hu.oe.nik.tdxawx.photoselecta.utility.DatabaseManager;
 import hu.oe.nik.tdxawx.photoselecta.utility.DraggableGridView;
+import hu.oe.nik.tdxawx.photoselecta.utility.ImageAnalyzer;
 
 import java.util.ArrayList;
 import android.app.Activity;
@@ -103,6 +105,7 @@ public class AnalyzerActivity extends Activity {
         		                pb.setVisibility(8);
         		                pbtext.setVisibility(8);
         		                
+        		                /*
         		                if (showSwipeInfo) {
 	        		                final AlertDialog info = new AlertDialog.Builder(AnalyzerActivity.this).create();
 	        		            	info.setTitle("Review photos");
@@ -115,6 +118,7 @@ public class AnalyzerActivity extends Activity {
 	        		                });
 	        		            	info.show();
         		                }
+        		                */
         					}
         				}
         			});
@@ -261,9 +265,9 @@ public class AnalyzerActivity extends Activity {
 	    	min = blur_b;
 	    
 	    if ((blur_a / min) < (blur_b / min))
-	    	return b; 
+	    	return a; 
     	else
-    		return a;
+    		return b;
 	 }
 
 }

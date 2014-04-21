@@ -1,5 +1,7 @@
 package hu.oe.nik.tdxawx.photoselecta;
 
+import hu.oe.nik.tdxawx.photoselecta.utility.DatabaseManager;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -10,6 +12,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+
+import org.opencv.android.BaseLoaderCallback;
+import org.opencv.android.LoaderCallbackInterface;
+import org.opencv.android.OpenCVLoader;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -50,8 +56,27 @@ public class MainActivity extends FragmentActivity {
 	private ImageView splashpic;
 	private TextView splashloader;
 	
+	// OpenCV init
+	private BaseLoaderCallback ocvLoadCallback = new BaseLoaderCallback(this) {
+	    @Override
+	    public void onManagerConnected(int status) {
+	        switch (status) {
+	            case LoaderCallbackInterface.SUCCESS:
+	            {
+	                Log.i("PS-OPENCV", "OpenCV loaded successfully");
+	            } break;
+	            default:
+	            {
+	                super.onManagerConnected(status);
+	            } break;
+	        }
+	    }
+	};
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		
+		OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_2_4_5, this, ocvLoadCallback);
 		
 		super.onCreate(savedInstanceState);
 		
@@ -174,7 +199,7 @@ public class MainActivity extends FragmentActivity {
     		}
     		publishProgress(25);
     		// open database and check for DB <-> FS inconsistency
-    		db = new DatabaseManager(getApplicationContext());
+    		db = new DatabaseManager(getApplicationContext());   		
     		db.checkFiles();
     		// ---
     		publishProgress(50);
@@ -234,6 +259,7 @@ public class MainActivity extends FragmentActivity {
 			public void onClick(View v) {
 				v.startAnimation( (Animation)AnimationUtils.loadAnimation(v.getContext(), R.anim.bounce) );
 				final Intent cam = new Intent(MainActivity.this, CameraActivity.class);
+				final Intent cvcam = new Intent(MainActivity.this, CvCameraActivity.class);
 				new AlertDialog.Builder(MainActivity.this) 
 				.setTitle("Choose session mode")
 				.setItems(new CharSequence[] {"Sharpness mode", "Category mode"}, new DialogInterface.OnClickListener() {
@@ -245,8 +271,8 @@ public class MainActivity extends FragmentActivity {
 				        	startActivityForResult(cam, 1001);
 				        	break;
 				        case 1:
-				        	cam.putExtra("session_mode", "category");
-				        	startActivityForResult(cam, 1001);
+				        	cvcam.putExtra("session_mode", "category");
+				        	startActivityForResult(cvcam, 1001);
 				        	break;
 			        	default:
 			        		break;
@@ -260,7 +286,7 @@ public class MainActivity extends FragmentActivity {
 			@Override
 			public void onClick(View v) {
 				v.startAnimation( (Animation)AnimationUtils.loadAnimation(v.getContext(), R.anim.bounce) );
-				Intent viewphotos = new Intent(MainActivity.this, ViewPhotosActivity.class);
+				Intent viewphotos = new Intent(MainActivity.this, ViewPhotosByTagActivity.class);
 				startActivityForResult(viewphotos, 1002);
 			}
 		});

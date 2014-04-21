@@ -13,6 +13,32 @@ public final class R {
         public static final int rotate=0x7f040001;
     }
     public static final class attr {
+        /** <p>May be an integer value, such as "<code>100</code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+<p>May be one of the following constant values.</p>
+<table>
+<colgroup align="left" />
+<colgroup align="left" />
+<colgroup align="left" />
+<tr><th>Constant</th><th>Value</th><th>Description</th></tr>
+<tr><td><code>any</code></td><td>-1</td><td></td></tr>
+<tr><td><code>back</code></td><td>99</td><td></td></tr>
+<tr><td><code>front</code></td><td>98</td><td></td></tr>
+</table>
+         */
+        public static final int camera_id=0x7f010001;
+        /** <p>Must be a boolean value, either "<code>true</code>" or "<code>false</code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int show_fps=0x7f010000;
     }
     public static final class dimen {
         /**  Default screen margins, per the Android Design guidelines. 
@@ -21,8 +47,8 @@ public final class R {
          screen margins) for sw720dp devices (e.g. 10" tablets) in landscape here.
     
          */
-        public static final int activity_horizontal_margin=0x7f070000;
-        public static final int activity_vertical_margin=0x7f070001;
+        public static final int activity_horizontal_margin=0x7f080000;
+        public static final int activity_vertical_margin=0x7f080001;
     }
     public static final class drawable {
         public static final int crosshair=0x7f020000;
@@ -44,60 +70,70 @@ public final class R {
         public static final int tick=0x7f020010;
     }
     public static final class id {
-        public static final int analyzergrid=0x7f0b0002;
-        public static final int analyzerprogress=0x7f0b0000;
-        public static final int analyzertext=0x7f0b0001;
-        public static final int btn_close_photo=0x7f0b000a;
-        public static final int btn_deletephoto=0x7f0b0003;
-        public static final int btn_shutter=0x7f0b0006;
-        public static final int cameraview=0x7f0b0004;
-        public static final int camsurface=0x7f0b0005;
-        public static final int crosshair=0x7f0b0007;
-        public static final int fullscreen_photo_pager=0x7f0b0008;
-        public static final int menu_settings=0x7f0b0016;
-        public static final int photoGrid=0x7f0b000c;
-        public static final int photo_image=0x7f0b0009;
-        public static final int photo_item_menu_back=0x7f0b001a;
-        public static final int photo_item_menu_category=0x7f0b0017;
-        public static final int photo_item_menu_delete=0x7f0b0018;
-        public static final int photo_item_menu_share=0x7f0b0019;
-        public static final int photolistlayout=0x7f0b000b;
-        public static final int splashloader=0x7f0b000e;
-        public static final int splashpic=0x7f0b000d;
-        public static final int start_categories=0x7f0b0010;
-        public static final int start_exit=0x7f0b0014;
-        public static final int start_sendphotos=0x7f0b0012;
-        public static final int start_settings=0x7f0b0013;
-        public static final int start_takenewphotos=0x7f0b000f;
-        public static final int start_viewphotos=0x7f0b0011;
-        public static final int view_photos_grid=0x7f0b0015;
+        public static final int analyzergrid=0x7f070005;
+        public static final int analyzerprogress=0x7f070003;
+        public static final int analyzertext=0x7f070004;
+        public static final int any=0x7f070000;
+        public static final int back=0x7f070001;
+        public static final int btn_close_photo=0x7f07000f;
+        public static final int btn_deletephoto=0x7f070006;
+        public static final int btn_shutter=0x7f070009;
+        public static final int cameraview=0x7f070007;
+        public static final int camsurface=0x7f070008;
+        public static final int crosshair=0x7f07000a;
+        public static final int cvcameraview=0x7f07000b;
+        public static final int cvcamsurface=0x7f07000c;
+        public static final int front=0x7f070002;
+        public static final int fullscreen_photo_pager=0x7f07000d;
+        public static final int menu_settings=0x7f07001d;
+        public static final int photoGrid=0x7f070011;
+        public static final int photo_image=0x7f07000e;
+        public static final int photo_item_menu_back=0x7f070021;
+        public static final int photo_item_menu_category=0x7f07001e;
+        public static final int photo_item_menu_delete=0x7f07001f;
+        public static final int photo_item_menu_share=0x7f070020;
+        public static final int photolistlayout=0x7f070010;
+        public static final int resetsettings=0x7f070012;
+        public static final int splashloader=0x7f070014;
+        public static final int splashpic=0x7f070013;
+        public static final int start_categories=0x7f070016;
+        public static final int start_exit=0x7f07001a;
+        public static final int start_sendphotos=0x7f070018;
+        public static final int start_settings=0x7f070019;
+        public static final int start_takenewphotos=0x7f070015;
+        public static final int start_viewphotos=0x7f070017;
+        public static final int tagphotolist=0x7f07001c;
+        public static final int view_photos_grid=0x7f07001b;
     }
     public static final class layout {
         public static final int analyzer=0x7f030000;
         public static final int cameraview=0x7f030001;
-        public static final int fullscreen_photo=0x7f030002;
-        public static final int fullscreen_photo_image=0x7f030003;
-        public static final int photolist=0x7f030004;
-        public static final int splash=0x7f030005;
-        public static final int start=0x7f030006;
-        public static final int view_photos=0x7f030007;
+        public static final int cvcameraview=0x7f030002;
+        public static final int fullscreen_photo=0x7f030003;
+        public static final int fullscreen_photo_image=0x7f030004;
+        public static final int photolist=0x7f030005;
+        public static final int settingslayout=0x7f030006;
+        public static final int splash=0x7f030007;
+        public static final int start=0x7f030008;
+        public static final int view_photos=0x7f030009;
+        public static final int view_photos_by_tag=0x7f03000a;
     }
     public static final class menu {
-        public static final int main=0x7f0a0000;
-        public static final int photo_item_menu=0x7f0a0001;
+        public static final int main=0x7f0b0000;
+        public static final int photo_item_menu=0x7f0b0001;
     }
     public static final class raw {
         public static final int shutter=0x7f060000;
     }
     public static final class string {
-        public static final int action_settings=0x7f080001;
-        public static final int app_name=0x7f080000;
-        public static final int dashboard_hello=0x7f080003;
-        public static final int hello_world=0x7f080002;
-        public static final int launching_camera=0x7f080006;
-        public static final int photolist_hello=0x7f080004;
-        public static final int shutter_button_text=0x7f080007;
-        public static final int takenewphoto=0x7f080005;
+        public static final int action_settings=0x7f090001;
+        public static final int app_name=0x7f090000;
+        public static final int dashboard_hello=0x7f090003;
+        public static final int hello_world=0x7f090002;
+        public static final int launching_camera=0x7f090006;
+        public static final int photolist_hello=0x7f090004;
+        public static final int shutter_button_text=0x7f090007;
+        public static final int takenewphoto=0x7f090005;
     }
     public static final class style {
         /** 
@@ -121,13 +157,68 @@ public final class R {
     
  API 14 theme customizations can go here. 
          */
-        public static final int AppBaseTheme=0x7f090000;
+        public static final int AppBaseTheme=0x7f0a0000;
         /**  Application theme. 
  All customizations that are NOT specific to a particular API-level can go here. 
          */
-        public static final int AppTheme=0x7f090001;
+        public static final int AppTheme=0x7f0a0001;
     }
     public static final class xml {
         public static final int settings=0x7f050000;
     }
+    public static final class styleable {
+        /** Attributes that can be used with a CameraBridgeViewBase.
+           <p>Includes the following attributes:</p>
+           <table>
+           <colgroup align="left" />
+           <colgroup align="left" />
+           <tr><th>Attribute</th><th>Description</th></tr>
+           <tr><td><code>{@link #CameraBridgeViewBase_camera_id hu.oe.nik.tdxawx.photoselecta:camera_id}</code></td><td></td></tr>
+           <tr><td><code>{@link #CameraBridgeViewBase_show_fps hu.oe.nik.tdxawx.photoselecta:show_fps}</code></td><td></td></tr>
+           </table>
+           @see #CameraBridgeViewBase_camera_id
+           @see #CameraBridgeViewBase_show_fps
+         */
+        public static final int[] CameraBridgeViewBase = {
+            0x7f010000, 0x7f010001
+        };
+        /**
+          <p>This symbol is the offset where the {@link hu.oe.nik.tdxawx.photoselecta.R.attr#camera_id}
+          attribute's value can be found in the {@link #CameraBridgeViewBase} array.
+
+
+          <p>May be an integer value, such as "<code>100</code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+<p>May be one of the following constant values.</p>
+<table>
+<colgroup align="left" />
+<colgroup align="left" />
+<colgroup align="left" />
+<tr><th>Constant</th><th>Value</th><th>Description</th></tr>
+<tr><td><code>any</code></td><td>-1</td><td></td></tr>
+<tr><td><code>back</code></td><td>99</td><td></td></tr>
+<tr><td><code>front</code></td><td>98</td><td></td></tr>
+</table>
+          @attr name hu.oe.nik.tdxawx.photoselecta:camera_id
+        */
+        public static final int CameraBridgeViewBase_camera_id = 1;
+        /**
+          <p>This symbol is the offset where the {@link hu.oe.nik.tdxawx.photoselecta.R.attr#show_fps}
+          attribute's value can be found in the {@link #CameraBridgeViewBase} array.
+
+
+          <p>Must be a boolean value, either "<code>true</code>" or "<code>false</code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          @attr name hu.oe.nik.tdxawx.photoselecta:show_fps
+        */
+        public static final int CameraBridgeViewBase_show_fps = 0;
+    };
 }

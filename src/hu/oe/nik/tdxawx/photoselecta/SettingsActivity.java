@@ -10,6 +10,7 @@ public class SettingsActivity extends PreferenceActivity {
 		super.onCreate(savedInstanceState);
 		setTitle("App settings");
 		addPreferencesFromResource(R.xml.settings);
+		setContentView(R.layout.settingslayout);
 	}
 	
 	@Override

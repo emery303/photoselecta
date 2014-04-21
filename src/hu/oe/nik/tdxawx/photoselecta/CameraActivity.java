@@ -1,29 +1,24 @@
 package hu.oe.nik.tdxawx.photoselecta;
 
-import java.io.ByteArrayOutputStream;
+import hu.oe.nik.tdxawx.photoselecta.utility.DatabaseManager;
+
 import java.io.FileOutputStream;
 import java.util.Calendar;
 import java.util.Date;
-
-import org.apache.commons.logging.Log;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
-import android.graphics.Bitmap.Config;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.hardware.Camera;
-import android.hardware.Camera.CameraInfo;
-import android.hardware.Camera.Parameters;
 import android.hardware.Camera.PictureCallback;
-import android.hardware.Camera.PreviewCallback;
 import android.hardware.Camera.ShutterCallback;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -42,8 +37,16 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 	boolean inUse = false;
 	boolean busy = false;
 	Bitmap camera_image;
+	Bitmap preview_image;
 	Date date;
 	FileOutputStream fos;
+	boolean previewProcessing = false;
+	private byte[] previewFrameData = null;
+	private int[] previewFramePixels = null;
+	Handler previewHandler = new Handler(Looper.getMainLooper());
+	int previewWidth = 640;
+	int previewHeight = 480;
+	int FrameCounter = 0; 
 	
 	private boolean took_photos = false;
 	private long SESSION_ID;
@@ -95,8 +98,6 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 					_cam.takePicture(shc, onRawPic, onJpgPic);
 			}
 		});
-		
-		
 	}	
 	
 	@Override
@@ -120,8 +121,6 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 	@Override
 	public void surfaceChanged(SurfaceHolder holder, int format, int width,
 			int height) {
-
-		
 		_cam.startPreview();
 	}
 	
@@ -129,8 +128,8 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 	public void surfaceCreated(SurfaceHolder holder) {
 		if (_cam == null) {
 			try {
-			_cam = Camera.open();
-			_cam.setPreviewDisplay(holder);
+				_cam = Camera.open();
+				_cam.setPreviewDisplay(holder);
 			} catch (Exception e) {
 				e.printStackTrace();
 				Toast.makeText(CameraActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
@@ -141,6 +140,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 	@Override
 	public void surfaceDestroyed(SurfaceHolder holder) {
 		if (_cam != null) {
+			_cam.setPreviewCallback(null);
 			_cam.stopPreview();
 			_cam.release();
 			_cam = null;
@@ -191,7 +191,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 			
 			camera.startPreview();
 			busy = false;
-			
+			Toast.makeText(CameraActivity.this, "Picture saved!", Toast.LENGTH_SHORT).show();
 		}
 	};
 	
@@ -201,7 +201,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 	PictureCallback onRawPic = new PictureCallback() {
 		@Override
 		public void onPictureTaken(byte[] data, Camera camera) {
-			Toast.makeText(CameraActivity.this, "RAW image taken", Toast.LENGTH_SHORT).show();
+			//Toast.makeText(CameraActivity.this, "RAW image taken", Toast.LENGTH_SHORT).show();
 		}
 	};
 	

@@ -5,7 +5,6 @@
 
 package hu.oe.nik.tdxawx.photoselecta.utility;
 
-import hu.oe.nik.tdxawx.photoselecta.DatabaseManager;
 
 import java.util.Collections;
 import java.util.ArrayList;
