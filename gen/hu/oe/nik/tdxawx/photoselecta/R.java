@@ -75,26 +75,27 @@ containing a value of this type.
         public static final int analyzertext=0x7f070004;
         public static final int any=0x7f070000;
         public static final int back=0x7f070001;
-        public static final int btn_close_photo=0x7f07000f;
+        public static final int btn_close_photo=0x7f070010;
         public static final int btn_deletephoto=0x7f070006;
         public static final int btn_shutter=0x7f070009;
         public static final int cameraview=0x7f070007;
         public static final int camsurface=0x7f070008;
+        public static final int categoryphotolist=0x7f07001c;
+        public static final int categorytext=0x7f07000d;
         public static final int crosshair=0x7f07000a;
         public static final int cvcameraview=0x7f07000b;
         public static final int cvcamsurface=0x7f07000c;
         public static final int front=0x7f070002;
-        public static final int fullscreen_photo_pager=0x7f07000d;
+        public static final int fullscreen_photo_pager=0x7f07000e;
         public static final int menu_settings=0x7f07001d;
-        public static final int photoGrid=0x7f070011;
-        public static final int photo_image=0x7f07000e;
+        public static final int photoGrid=0x7f070012;
+        public static final int photo_image=0x7f07000f;
         public static final int photo_item_menu_back=0x7f070021;
         public static final int photo_item_menu_category=0x7f07001e;
         public static final int photo_item_menu_delete=0x7f07001f;
         public static final int photo_item_menu_share=0x7f070020;
-        public static final int photolistlayout=0x7f070010;
-        public static final int resetsettings=0x7f070012;
-        public static final int splashloader=0x7f070014;
+        public static final int photolistlayout=0x7f070011;
+        public static final int splashloaderbar=0x7f070014;
         public static final int splashpic=0x7f070013;
         public static final int start_categories=0x7f070016;
         public static final int start_exit=0x7f07001a;
@@ -102,7 +103,6 @@ containing a value of this type.
         public static final int start_settings=0x7f070019;
         public static final int start_takenewphotos=0x7f070015;
         public static final int start_viewphotos=0x7f070017;
-        public static final int tagphotolist=0x7f07001c;
         public static final int view_photos_grid=0x7f07001b;
     }
     public static final class layout {
@@ -116,14 +116,15 @@ containing a value of this type.
         public static final int splash=0x7f030007;
         public static final int start=0x7f030008;
         public static final int view_photos=0x7f030009;
-        public static final int view_photos_by_tag=0x7f03000a;
+        public static final int view_photos_by_category=0x7f03000a;
     }
     public static final class menu {
         public static final int main=0x7f0b0000;
         public static final int photo_item_menu=0x7f0b0001;
     }
     public static final class raw {
-        public static final int shutter=0x7f060000;
+        public static final int face=0x7f060000;
+        public static final int shutter=0x7f060001;
     }
     public static final class string {
         public static final int action_settings=0x7f090001;

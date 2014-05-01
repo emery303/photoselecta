@@ -36,5 +36,20 @@
         android:layout_centerVertical="true"
         android:src="@drawable/crosshair" 
         />
+    
+    <TextView
+        android:id="@+id/categorytext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="8dp"
+        android:layout_marginRight="8dp"
+        android:padding="8dp"
+        android:background="#333333"
+        android:textColor="#ffffff"
+        android:textSize="24sp"
+        android:text="Uncategorized"
+        />
 
 </RelativeLayout>

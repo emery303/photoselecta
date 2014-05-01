@@ -83,10 +83,10 @@ public class MainActivity extends FragmentActivity {
 		setContentView(R.layout.splash);
         
         splashpic = (ImageView)findViewById(R.id.splashpic);
-        splashloader = (TextView)findViewById(R.id.splashloader);
+        splashloader = (TextView)findViewById(R.id.splashloaderbar);
         splashloader.setScaleX(0.0f);
 		
-		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+		//setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		this._preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 		
 		new SplashScreen().execute();
@@ -103,7 +103,7 @@ public class MainActivity extends FragmentActivity {
 				String last_session_mode = ex.getString("SESSION_MODE");
 				
 				if (cam_result != null)
-				if (cam_result.equals("YES")) { 					
+				if (cam_result.equals("YES") && last_session_mode.equals("SHARPNESS")) { 					
 					Intent analyzer = new Intent(MainActivity.this, AnalyzerActivity.class);
 					analyzer.putExtra("SESSION_MODE", last_session_mode);
 					startActivityForResult(analyzer, 1003);
@@ -286,7 +286,7 @@ public class MainActivity extends FragmentActivity {
 			@Override
 			public void onClick(View v) {
 				v.startAnimation( (Animation)AnimationUtils.loadAnimation(v.getContext(), R.anim.bounce) );
-				Intent viewphotos = new Intent(MainActivity.this, ViewPhotosByTagActivity.class);
+				Intent viewphotos = new Intent(MainActivity.this, ViewPhotosByCategoryActivity.class);
 				startActivityForResult(viewphotos, 1002);
 			}
 		});

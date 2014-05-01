@@ -18,6 +18,7 @@ public class ColorBlobDetector {
     // Minimum contour area in percent for contours filtering
     private static double mMinContourArea = 0.1;
     private double contourArea = 0.0;
+    private double fullContourArea = 0.0;
     // Color radius for range checking in HSV color space
     private Scalar mColorRadius = new Scalar(25,50,50,0);
     private Mat mSpectrum = new Mat();
@@ -83,15 +84,18 @@ public class ColorBlobDetector {
 
         // Find max contour area
         double maxArea = 0;
+        double fca = 0;
         Iterator<MatOfPoint> each = contours.iterator();
         while (each.hasNext()) {
             MatOfPoint wrapper = each.next();
             double area = Imgproc.contourArea(wrapper);
+            fca += area;
             if (area > maxArea)
                 maxArea = area;
         }
         
         this.contourArea = maxArea;
+        this.fullContourArea = fca;
 
         // Filter contours by area and resize to fit the original image size
         mContours.clear();
@@ -110,6 +114,6 @@ public class ColorBlobDetector {
     }
     
     public double getContourArea() {
-	    return this.contourArea;
+	    return this.fullContourArea;
     }
 }

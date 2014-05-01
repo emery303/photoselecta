@@ -1,6 +1,6 @@
 package hu.oe.nik.tdxawx.photoselecta;
 
-import hu.oe.nik.tdxawx.photoselecta.adapters.TaggedPhotoAdapter;
+import hu.oe.nik.tdxawx.photoselecta.adapters.CategorizedPhotoAdapter;
 import hu.oe.nik.tdxawx.photoselecta.adapters.ViewPhotosAdapter;
 import hu.oe.nik.tdxawx.photoselecta.utility.Constants;
 import hu.oe.nik.tdxawx.photoselecta.utility.DatabaseManager;
@@ -34,7 +34,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class ViewPhotosByTagActivity extends Activity {
+public class ViewPhotosByCategoryActivity extends Activity {
 
 	private Utility utils;
 	private ArrayList<String> imagePaths = new ArrayList<String>();
@@ -47,30 +47,30 @@ public class ViewPhotosByTagActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.view_photos_by_tag);
+		setContentView(R.layout.view_photos_by_category);
 		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		buildPhotoList();
 	}
 	
 	@Override
 	public void onBackPressed() {
-		Intent i = new Intent(ViewPhotosByTagActivity.this, MainActivity.class);
+		Intent i = new Intent(ViewPhotosByCategoryActivity.this, MainActivity.class);
 		setResult(1, i);
 		finish();
 	}
 	
 	public void buildPhotoList() {
 		Typeface HelveticaNeueCB = Typeface.createFromAsset(getAssets(), "HelveticaNeue-CondensedBold.ttf");
-		LinearLayout layout = (LinearLayout)findViewById(R.id.tagphotolist);
+		LinearLayout layout = (LinearLayout)findViewById(R.id.categoryphotolist);
 		DatabaseManager db = new DatabaseManager(getApplicationContext());
-		db.assignRandomTags();
-		db.getTag2Photos();
-		CharSequence[] tags = db.getTags();
-		for (int i = 0; i < tags.length; i++) {
-			TaggedPhotoAdapter adapter = new TaggedPhotoAdapter(ViewPhotosByTagActivity.this, 320, tags[i]);
+		//db.assignRandomCategories();
+		db.getCategory2Photos();
+		CharSequence[] categories = db.getCategories();
+		for (int i = 0; i < categories.length; i++) {
+			CategorizedPhotoAdapter adapter = new CategorizedPhotoAdapter(ViewPhotosByCategoryActivity.this, 320, categories[i]);
 			if (adapter.getCount() > 0) {
 				TextView tv = new TextView(getApplicationContext());
-				tv.setText(tags[i]);
+				tv.setText(categories[i]);
 				tv.setTypeface(HelveticaNeueCB);
 				tv.setBackgroundColor(Color.DKGRAY);
 				tv.setTextColor(Color.WHITE);

@@ -28,16 +28,14 @@ public class FullscreenPhotoActivity extends Activity{
 		utils = new Utility(getApplicationContext());
 
 		Intent i = getIntent();
-		int position = i.getIntExtra("position", 0);
+		String path = i.getStringExtra("path");
 
 		ArrayList<String> selectedPhoto = new ArrayList<String>(); 
-		selectedPhoto.add(utils.getFilePaths().get(position));
+		selectedPhoto.add(path);
 		
 		adapter = new FullscreenPhotoAdapter(FullscreenPhotoActivity.this, selectedPhoto);
 
 		viewPager.setAdapter(adapter);
 
-		// displaying selected image first
-		viewPager.setCurrentItem(position);
 	}
 }

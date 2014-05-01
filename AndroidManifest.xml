@@ -7,19 +7,22 @@
     <uses-sdk
         android:minSdkVersion="14"
         android:targetSdkVersion="17" />
-
-    <uses-feature 
-        android:name="android.hardware.camera"
-        />
    	
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
+    
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature android:name="android.hardware.camera.autofocus" android:required="false"/>
+    <uses-feature android:name="android.hardware.camera.front" android:required="false"/>
+    <uses-feature android:name="android.hardware.camera.front.autofocus" android:required="false"/>
     
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme" 
+        android:configChanges="orientation">
         <activity
             android:name="hu.oe.nik.tdxawx.photoselecta.MainActivity"
             android:label="@string/app_name" >
@@ -41,7 +44,7 @@
             android:label="@string/app_name" >
         </activity>
         <activity
-            android:name="hu.oe.nik.tdxawx.photoselecta.ViewPhotosByTagActivity"
+            android:name="hu.oe.nik.tdxawx.photoselecta.ViewPhotosByCategoryActivity"
             android:label="@string/app_name" >
         </activity>
         <activity

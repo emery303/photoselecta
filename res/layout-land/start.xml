@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:layout_gravity="center"
+    android:layout_margin="0dp"
+    android:alignmentMode="alignBounds"
+    android:background="#395898"
+    android:columnCount="3"
+    android:orientation="horizontal"
+    android:rowCount="2"
+    android:textAlignment="center"
+    android:textColor="#ffffff"
+    android:textStyle="bold">
+
+    <ImageButton
+        android:id="@+id/start_takenewphotos"
+        android:layout_column="0"
+        android:layout_gravity="left|center_vertical"
+        android:layout_row="0"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:background="@drawable/start_takenewphotos" />
+
+    <ImageButton
+        android:id="@+id/start_categories"
+        android:layout_column="1"
+        android:layout_gravity="left|center_vertical"
+        android:layout_row="0"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:background="@drawable/start_categories" />
+
+    <ImageButton
+        android:id="@+id/start_viewphotos"
+        android:layout_column="2"
+        android:layout_gravity="left|center_vertical"
+        android:layout_row="0"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:background="@drawable/start_viewphotos" />
+
+    <ImageButton
+        android:id="@+id/start_sendphotos"
+        android:layout_column="0"
+        android:layout_gravity="left|center_vertical"
+        android:layout_row="1"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:background="@drawable/start_sendphotos" />
+
+    <ImageButton
+        android:id="@+id/start_settings"
+        android:layout_column="1"
+        android:layout_gravity="left|center_vertical"
+        android:layout_row="1"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:background="@drawable/start_settings" />
+
+    <ImageButton
+        android:id="@+id/start_exit"
+        android:layout_column="2"
+        android:layout_gravity="left|center_vertical"
+        android:layout_row="1"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:background="@drawable/start_exit" />
+
+</GridLayout>

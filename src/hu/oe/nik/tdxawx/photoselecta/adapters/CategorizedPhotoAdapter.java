@@ -18,17 +18,17 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 
-public class TaggedPhotoAdapter extends BaseAdapter {
+public class CategorizedPhotoAdapter extends BaseAdapter {
 
 	private Activity _activity;
 	private ArrayList<String> _filePaths = new ArrayList<String>();
 	private int imageWidth;
 
-	public TaggedPhotoAdapter(Activity activity, int imageWidth, CharSequence tagname) {
+	public CategorizedPhotoAdapter(Activity activity, int imageWidth, CharSequence catname) {
 		DatabaseManager db = new DatabaseManager(activity.getApplicationContext());
 
 		this._activity = activity;
-		this._filePaths = db.getPhotosByTag(tagname);
+		this._filePaths = db.getPhotosByCategory(catname);
 		this.imageWidth = imageWidth;
 	}
 
@@ -62,29 +62,22 @@ public class TaggedPhotoAdapter extends BaseAdapter {
 		imageView.setLayoutParams(new GridView.LayoutParams(imageWidth,	imageWidth));
 		imageView.setImageBitmap(image);
 
-		//imageView.setOnClickListener(new OnImageClickListener(position));
+		imageView.setOnClickListener(new OnImageClickListener(_filePaths.get(position)));
 
 		return imageView;
 	}
 
 	class OnImageClickListener implements OnClickListener {
-
-		int _postion;
-
-		// constructor
-		public OnImageClickListener(int position) {
-			this._postion = position;
+		String _path;
+		public OnImageClickListener(String path) {
+			this._path = path;
 		}
-
 		@Override
 		public void onClick(View v) {
-			// on selecting grid view image
-			// launch full screen activity
 			Intent i = new Intent(_activity, FullscreenPhotoActivity.class);
-			i.putExtra("position", _postion);
+			i.putExtra("path", _path);
 			_activity.startActivity(i);
 		}
-
 	}
 
 	/*

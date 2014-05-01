@@ -12,7 +12,7 @@
 			    android:layout_height="fill_parent"
 			    android:orientation="vertical"
 			    android:background="#395898"
-			    android:id="@+id/tagphotolist"
+			    android:id="@+id/categoryphotolist"
 			    >
 			    </LinearLayout>
 		</ScrollView>

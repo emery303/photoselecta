@@ -23,6 +23,7 @@ import android.view.LayoutInflater;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.Toast;
@@ -41,8 +42,6 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 	Date date;
 	FileOutputStream fos;
 	boolean previewProcessing = false;
-	private byte[] previewFrameData = null;
-	private int[] previewFramePixels = null;
 	Handler previewHandler = new Handler(Looper.getMainLooper());
 	int previewWidth = 640;
 	int previewHeight = 480;
@@ -51,36 +50,16 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 	private boolean took_photos = false;
 	private long SESSION_ID;
 	
-	private int _mode;
-	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.cameraview);
 		
-		Intent i = getIntent();
-		
-		if (i.getStringExtra("session_mode").equals("sharpness"))
-			_mode = 0;
-		else
-			_mode = 1;
-		
-		switch (_mode) {
-			case 0:
-				setTitle("Take photos - sharpness mode");
-				break;
-			case 1:
-				setTitle("Take photos - category mode");
-				break;
-			default:
-				break;
-		}
-		
+		setTitle("Take photos - sharpness mode");
 		SESSION_ID = Calendar.getInstance().getTimeInMillis();
-		
 		_shuttersound = MediaPlayer.create(CameraActivity.this, R.raw.shutter);
-		
 		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 		
 		getWindow().setFormat(PixelFormat.UNKNOWN);
 		sv = (SurfaceView) findViewById(R.id.camsurface);
@@ -95,7 +74,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 			@Override
 			public void onClick(View v) {
 				if (!busy)
-					_cam.takePicture(shc, onRawPic, onJpgPic);
+					_cam.takePicture(null, onRawPic, onJpgPic);
 			}
 		});
 	}	
@@ -109,10 +88,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 			i.putExtra("CAMERA_DONE_PHOTOS", "NO");
 		}
 		
-		if (this._mode == 0)
-			i.putExtra("SESSION_MODE", "SHARPNESS");
-		else
-			i.putExtra("SESSION_MODE", "CATEGORY");
+		i.putExtra("SESSION_MODE", "SHARPNESS");
 		
 		setResult(1, i);
 		finish();
@@ -149,18 +125,6 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 	}
 	
 	/*
-	 * SHUTTER callback 
-	 */
-	 ShutterCallback shc = new ShutterCallback() {
-		@Override
-		public void onShutter() {
-			if (_shuttersound.isPlaying());
-				_shuttersound.stop();
-			_shuttersound.start();
-		}
-	};
-	
-	/*
 	 * JPG image data callback
 	 */
 	PictureCallback onJpgPic = new PictureCallback() {
@@ -178,11 +142,15 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 			//Toast.makeText(CameraActivity.this, "Image saved: "+fname, Toast.LENGTH_SHORT).show();
 			
 			DatabaseManager db = new DatabaseManager(CameraActivity.this);
-			long photo_id = db.insertPhoto(path, SESSION_ID);
+			int photo_id = db.insertPhoto(path, SESSION_ID);
+			db.assignCategoryToPhoto(photo_id, db.getCategoryIdByName("Uncategorized"));
 			db.CloseDB();
 			
 			took_photos = true;
-			//Toast.makeText(CameraActivity.this, "Photo ID: "+String.valueOf(photo_id), Toast.LENGTH_SHORT).show();
+			
+			if (_shuttersound.isPlaying())
+				_shuttersound.stop();
+			_shuttersound.start();
 			
 			} catch (Exception e) {
 				e.printStackTrace();
