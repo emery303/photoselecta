@@ -1,0 +1,28 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#395898"
+    tools:context=".MainActivity" >
+
+    <TextView
+        android:id="@+id/importprogresstext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:text="Import in progress"
+        android:textColor="#fff"
+        android:textSize="32sp" />
+    
+    <TextView
+        android:id="@+id/importprogressbar"
+        android:layout_width="256dp"
+        android:layout_height="16dp"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/importprogresstext"
+        android:text=""
+        android:background="#ffffff"
+         />
+ 
+</RelativeLayout>

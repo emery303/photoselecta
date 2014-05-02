@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<RelativeLayout 
+       android:layout_width="fill_parent"
+       android:layout_height="fill_parent"
+       android:background="#395898"
+       android:orientation="vertical"
+       xmlns:android="http://schemas.android.com/apk/res/android">
+	    <TextView
+	        android:id="@+id/tagtext"
+	        android:text="Tag:"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_gravity="left"
+	        android:background="#333333"
+	        android:textColor="#ffffff"
+	        android:textSize="16sp"
+	        android:padding="8dp"
+	        android:layout_marginLeft="16dp"
+	        android:layout_marginTop="16dp"
+	        />
+	    <AutoCompleteTextView
+	        android:id="@+id/tagname"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_toRightOf="@id/tagtext"
+	        android:background="#ffffff"
+	        android:textColor="#333333"
+	        android:padding="8dp"
+	        android:textSize="16sp"
+	        android:layout_marginTop="16dp"
+	        android:layout_marginRight="16dp"
+	        />
+	    <GridView 
+	        android:id="@+id/photolistbytag"
+	        android:layout_width="fill_parent"
+	        android:layout_height="fill_parent"
+	        android:layout_below="@id/tagtext"
+	        android:layout_marginTop="16dp"
+	        android:columnWidth="320dp"
+	        android:horizontalSpacing="8dp"
+	        android:verticalSpacing="8dp"
+	        android:numColumns="3"
+	        android:requiresFadingEdge="vertical"
+	        android:clickable="true"
+	        />
+</RelativeLayout>

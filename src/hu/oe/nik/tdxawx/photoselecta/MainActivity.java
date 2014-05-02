@@ -47,6 +47,8 @@ import android.widget.Toast;
 
 public class MainActivity extends FragmentActivity {
 	
+	boolean splash_finished = false;
+	
 	public static List<String> _photos = new ArrayList<String>();
 	public static final String PHOTOS_ORDER = "desc";
 	private DatabaseManager db;
@@ -89,7 +91,11 @@ public class MainActivity extends FragmentActivity {
 		//setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		this._preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 		
-		new SplashScreen().execute();
+		if (!splash_finished) {
+			new SplashScreen().execute();
+		} else {
+			InitStartScreen();
+		}
 
 	}
 	
@@ -100,14 +106,21 @@ public class MainActivity extends FragmentActivity {
 			Bundle ex = data.getExtras();
 			if (ex != null) {
 				String cam_result = ex.getString("CAMERA_DONE_PHOTOS");
+				String import_result = ex.getString("IMPORTED_PHOTOS");
 				String last_session_mode = ex.getString("SESSION_MODE");
 				
 				if (cam_result != null)
-				if (cam_result.equals("YES") && last_session_mode.equals("SHARPNESS")) { 					
-					Intent analyzer = new Intent(MainActivity.this, AnalyzerActivity.class);
-					analyzer.putExtra("SESSION_MODE", last_session_mode);
-					startActivityForResult(analyzer, 1003);
-				}
+					if (cam_result.equals("YES") && last_session_mode.equals("SHARPNESS")) { 					
+						Intent analyzer = new Intent(MainActivity.this, AnalyzerActivity.class);
+						analyzer.putExtra("SESSION_MODE", last_session_mode);
+						startActivityForResult(analyzer, 1003);
+					}
+				
+				if (import_result != null)
+					if (import_result.equals("YES")) { 					
+						Intent viewphotosbycat = new Intent(MainActivity.this, ViewPhotosByCategoryActivity.class);
+						startActivityForResult(viewphotosbycat, 1003);
+					}
 			}
 		}
 		super.onActivityResult(requestCode, resultCode, data);
@@ -224,11 +237,17 @@ public class MainActivity extends FragmentActivity {
 	
 	public void InitStartScreen() {
 		
+		splash_finished = true;
+		
 		setContentView(R.layout.start);
 		
 		ImageButton btn_exit = (ImageButton)findViewById(R.id.start_exit);
 		ImageButton btn_takenewphotos = (ImageButton)findViewById(R.id.start_takenewphotos);
-		ImageButton btn_viewphotos = (ImageButton)findViewById(R.id.start_viewphotos);
+		ImageButton btn_viewphotosbycat = (ImageButton)findViewById(R.id.start_categories);
+		ImageButton btn_viewphotosbytag = (ImageButton)findViewById(R.id.start_tags);
+		ImageButton btn_gallery = (ImageButton)findViewById(R.id.start_viewphotos);
+		ImageButton btn_importfolder = (ImageButton)findViewById(R.id.start_importfolder);
+		ImageButton btn_sendphotos = (ImageButton)findViewById(R.id.start_sendphotos);
 		ImageButton btn_settings = (ImageButton)findViewById(R.id.start_settings);
 		
 		btn_exit.setOnClickListener(new OnClickListener() {
@@ -281,13 +300,49 @@ public class MainActivity extends FragmentActivity {
 				}).show();
 			}
 		});
-	
-		btn_viewphotos.setOnClickListener(new OnClickListener() {
+		
+		btn_gallery.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				v.startAnimation( (Animation)AnimationUtils.loadAnimation(v.getContext(), R.anim.bounce) );
-				Intent viewphotos = new Intent(MainActivity.this, ViewPhotosByCategoryActivity.class);
-				startActivityForResult(viewphotos, 1002);
+				//Intent i = new Intent(MainActivity.this, ImportFolderActivity.class);
+				//startActivityForResult(i, 1003);
+			}
+		});
+	
+		btn_viewphotosbycat.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				v.startAnimation( (Animation)AnimationUtils.loadAnimation(v.getContext(), R.anim.bounce) );
+				Intent viewphotosbycat = new Intent(MainActivity.this, ViewPhotosByCategoryActivity.class);
+				startActivityForResult(viewphotosbycat, 1002);
+			}
+		});
+		
+		btn_viewphotosbytag.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				v.startAnimation( (Animation)AnimationUtils.loadAnimation(v.getContext(), R.anim.bounce) );
+				Intent viewphotosbytag = new Intent(MainActivity.this, ViewPhotosByTagActivity.class);
+				startActivityForResult(viewphotosbytag, 1003);
+			}
+		});
+		
+		btn_importfolder.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				v.startAnimation( (Animation)AnimationUtils.loadAnimation(v.getContext(), R.anim.bounce) );
+				Intent importfolder = new Intent(MainActivity.this, ImportFolderActivity.class);
+				startActivityForResult(importfolder, 1004);
+			}
+		});
+		
+		btn_sendphotos.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				v.startAnimation( (Animation)AnimationUtils.loadAnimation(v.getContext(), R.anim.bounce) );
+				Intent sendphotos = new Intent(MainActivity.this, ImportFolderActivity.class);
+				startActivityForResult(sendphotos, 1005);
 			}
 		});
 		
@@ -297,7 +352,7 @@ public class MainActivity extends FragmentActivity {
 			public void onClick(View v) {
 				v.startAnimation( (Animation)AnimationUtils.loadAnimation(v.getContext(), R.anim.bounce) );
 				Intent settings = new Intent(MainActivity.this, SettingsActivity.class);
-				startActivityForResult(settings, 1003);
+				startActivityForResult(settings, 1006);
 			}
 		});
 	}

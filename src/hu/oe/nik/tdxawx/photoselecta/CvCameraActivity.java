@@ -1,6 +1,7 @@
 package hu.oe.nik.tdxawx.photoselecta;
 
 import hu.oe.nik.tdxawx.photoselecta.utility.ColorBlobDetector;
+import hu.oe.nik.tdxawx.photoselecta.utility.CvImageProcessor;
 import hu.oe.nik.tdxawx.photoselecta.utility.DatabaseManager;
 
 import java.io.File;
@@ -19,6 +20,7 @@ import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
+import org.opencv.core.MatOfPoint2f;
 import org.opencv.core.MatOfRect;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
@@ -56,7 +58,7 @@ public class CvCameraActivity extends Activity implements /*OnTouchListener,*/ C
     //private boolean              mIsColorSelected = false;
     private Mat mRgba;
     private Mat mGray;
-    private Scalar               mBlobColorRgba;
+    private Scalar mBlobColorRgba;
     private Scalar               mBlobColorHsv;
     private ColorBlobDetector    mDetector;
     private Mat                  mSpectrum;
@@ -64,6 +66,8 @@ public class CvCameraActivity extends Activity implements /*OnTouchListener,*/ C
     private Scalar               CONTOUR_COLOR;
     private File                   mCascadeFile;
     private CascadeClassifier      mJavaDetector;
+    
+    private CvImageProcessor proc;
     
     private MediaPlayer _shuttersound;
     FileOutputStream fos;
@@ -85,35 +89,8 @@ public class CvCameraActivity extends Activity implements /*OnTouchListener,*/ C
                     Log.i("PS-OPENCV", "OpenCV loaded successfully");
                     
                     //System.loadLibrary("detection_based_tracker");
-
-                    try {
-                        // load cascade file from application resources
-                        InputStream is = getResources().openRawResource(R.raw.face);
-                        File cascadeDir = getDir("cascade", Context.MODE_PRIVATE);
-                        mCascadeFile = new File(cascadeDir, "face.xml");
-                        FileOutputStream os = new FileOutputStream(mCascadeFile);
-
-                        byte[] buffer = new byte[4096];
-                        int bytesRead;
-                        while ((bytesRead = is.read(buffer)) != -1) {
-                            os.write(buffer, 0, bytesRead);
-                        }
-                        is.close();
-                        os.close();
-
-                        mJavaDetector = new CascadeClassifier(mCascadeFile.getAbsolutePath());
-                        if (mJavaDetector.empty()) {
-                            Log.e("PS-CASCADE", "Failed to load cascade classifier");
-                            mJavaDetector = null;
-                        } else
-                            Log.i("PS-CASCADE", "Loaded cascade classifier from " + mCascadeFile.getAbsolutePath());
-
-                        cascadeDir.delete();
-
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        Log.e("PS-CASCADE", "Failed to load cascade. Exception thrown: " + e);
-                    }
+                    
+                    proc = new CvImageProcessor(getApplicationContext());
                     
                     mOpenCvCameraView.enableView();
                 } break;
@@ -242,7 +219,13 @@ public class CvCameraActivity extends Activity implements /*OnTouchListener,*/ C
     public Mat onCameraFrame(CvCameraViewFrame inputFrame) {
     	mRgba = inputFrame.rgba();
     	mGray = inputFrame.gray();
-    	mRgba = determineCategory(mRgba, mGray);
+    	if (proc != null) {
+	    	CharSequence cat = proc.determineCategory(mRgba, mGray);
+	    	this.selectedCategory = cat.toString();
+	        updateCategoryText(cat, "");
+    	}
+    	//mRgba = determineCategory(mRgba, mGray);
+    	//mRgba = determineShape(mRgba, mGray);
         return mRgba;
     }
 
@@ -331,113 +314,5 @@ public class CvCameraActivity extends Activity implements /*OnTouchListener,*/ C
     	    	 categorytext.setText(result);
     	    }
     	});
-    }
-    
-    private Mat determineCategory(Mat m, Mat mg) {
-    	CharSequence cat = "";
-    	int smallfacesize = (int)(m.size().height * 0.2);
-    	int largefacesize = (int)(m.size().height * 0.5);
-    	MatOfRect smallfaces = new MatOfRect();
-    	MatOfRect largefaces = new MatOfRect();
-    	mJavaDetector.detectMultiScale(mg, smallfaces, 1.1, 2, 2, new Size(smallfacesize, smallfacesize), new Size());
-    	mJavaDetector.detectMultiScale(mg, largefaces, 1.1, 2, 2, new Size(largefacesize, largefacesize), new Size());
-    	
-    	double snow = 0;
-    	double sky = 0;
-    	double yellow = 0;
-    	double red = 0;
-    	double sand = 0;
-    	double dark = 0;
-    	double sfaces = smallfaces.toArray().length;
-    	double lfaces = largefaces.toArray().length;
-    	double earth = 0;
-    	double green = 0;
-    	String debugtext = "";
-    	List<MatOfPoint> cntr;
-    		
-		// snow component
-    	mDetector.setColorRadius(new Scalar(127,50,55));
-    	mDetector.setHsvColor(new Scalar(127,0,200));
-        mDetector.process(m);
-        snow = ((mDetector.getContourArea() / (m.size().width*m.size().height)) * 100) / 5;
-        //cntr = mDetector.getContours();
-        //Imgproc.drawContours(m, cntr, -1, new Scalar(120,120,120,255), 2);
-       
-        // sand component
-    	mDetector.setColorRadius(new Scalar(30,120,110));
-    	mDetector.setHsvColor(new Scalar(30,120,230));
-        mDetector.process(m);
-        sand = ((mDetector.getContourArea() / (m.size().width*m.size().height)) * 100) / 5;
-        //cntr = mDetector.getContours();
-        //Imgproc.drawContours(m, cntr, -1, new Scalar(255,255,0,255), 2);
-        
-        // sky component
-    	mDetector.setColorRadius(new Scalar(25,150,90));
-    	mDetector.setHsvColor(new Scalar(155,255,180));
-        mDetector.process(m);
-        sky = ((mDetector.getContourArea() / (m.size().width*m.size().height)) * 100) / 5;
-        //cntr = mDetector.getContours();
-        //Imgproc.drawContours(m, cntr, -1, new Scalar(0,0,255,255), 2);
-        
-        // yellow component
-    	mDetector.setColorRadius(new Scalar(25,150,70));
-    	mDetector.setHsvColor(new Scalar(40,255,180));
-        mDetector.process(m);
-        yellow = ((mDetector.getContourArea() / (m.size().width*m.size().height)) * 100) / 5;
-        //cntr = mDetector.getContours();
-        //Imgproc.drawContours(m, cntr, -1, new Scalar(255,255,0,255), 2);
-        
-        // red component
-    	mDetector.setColorRadius(new Scalar(15,200,150));
-    	mDetector.setHsvColor(new Scalar(0,255,100));
-        mDetector.process(m);
-        red = ((mDetector.getContourArea() / (m.size().width*m.size().height)) * 100) / 5;
-        //cntr = mDetector.getContours();
-        //Imgproc.drawContours(m, cntr, -1, new Scalar(255,0,0,255), 2);
-        
-        // earth component
-    	mDetector.setColorRadius(new Scalar(20,80,100));
-    	mDetector.setHsvColor(new Scalar(44,78,60));
-        mDetector.process(m);
-        earth = ((mDetector.getContourArea() / (m.size().width*m.size().height)) * 100) / 5;
-        //cntr = mDetector.getContours();
-        //Imgproc.drawContours(m, cntr, -1, new Scalar(127,140,0,255), 2);
-        
-     	// green component
-    	mDetector.setColorRadius(new Scalar(20,110,110));
-    	mDetector.setHsvColor(new Scalar(70,190,150));
-        mDetector.process(m);
-        green = ((mDetector.getContourArea() / (m.size().width*m.size().height)) * 100) / 5;
-        //cntr = mDetector.getContours();
-        //Imgproc.drawContours(m, cntr, -1, new Scalar(0,255,0,255), 2);
-        
-        // dark component
-    	mDetector.setColorRadius(new Scalar(255,40,80));
-    	mDetector.setHsvColor(new Scalar(0,0,0));
-        mDetector.process(m);
-        dark = ((mDetector.getContourArea() / (m.size().width*m.size().height)) * 100) / 5;
-        
-        cat = "Uncategorized";
-        
-        if (lfaces > 0)
-			cat = "#selfie";
-        else if (green > 0.5 && earth > 0.25)
-        	cat = "#forest";
-        else if (sand > 0.3 && sky > 0.4 && green > 0.01)
-			cat = "#beach";
-        else if (snow > 0.4 && sky > 0.3)
-        	cat = "#snow";
-		else if (yellow > 0.2 && red > 0.4)
-			cat = "#sunset";
-		else if (dark > 0.6)
-			cat = "#night";
-		else if (sfaces > 0)
-			cat = "#people";
-		
-        this.selectedCategory = cat.toString();
-        
-        updateCategoryText(cat, debugtext);
-        
-        return m;
     }
 }

@@ -213,6 +213,33 @@ public class DatabaseManager extends SQLiteOpenHelper{
     		  return false;
       }
       
+      public boolean insertImportChecksum(String hash) {
+    	  if (this.database != null) {
+    		  Cursor cur = database.rawQuery("INSERT INTO imports (checksum) VALUES ('"+hash+"')", null);
+    		  if (cur != null) {
+    			  cur.close();
+    			  Log.d("", "PS DB inserted checksum "+hash);
+    			  return true;
+    		  } else {
+    			  return false;
+    		  }
+    	  } else
+    		  return false;
+      }
+      
+      public boolean checksumExists(String hash) {
+    	  if (this.database != null) {
+    		  Cursor cur = database.rawQuery("SELECT * FROM imports WHERE checksum = '"+hash+"'", null);
+    		  if (cur != null && cur.getCount() > 0) {
+    			  cur.close();
+    			  return true;
+    		  } else {
+    			  return false;
+    		  }
+    	  } else
+    		  return false;
+      }
+      
       public boolean assignTagToPhoto(int photo_id, int tag_id) {
     	  if (this.database != null) {
     		  database.execSQL("DELETE FROM tag2photo WHERE tag_id = '"+String.valueOf(tag_id)+"' AND photo_id = '"+String.valueOf(photo_id)+"';");
@@ -392,9 +419,9 @@ public class DatabaseManager extends SQLiteOpenHelper{
       }
       
       public CharSequence[] getTags() {
-    	  CharSequence[] empty = {"-"};
+    	  CharSequence[] empty = { };
     	  Cursor cur = database.rawQuery("SELECT name FROM tags", null);
-		  if (cur != null) {
+		  if (cur != null && cur.getCount() > 0) {
 		       cur.moveToFirst();
 		       CharSequence[] result = new CharSequence[cur.getCount()];
 		       int n = 0;
@@ -480,6 +507,13 @@ public class DatabaseManager extends SQLiteOpenHelper{
 		     + " (" +
 		     "	photo_id INT NOT NULL," +
 		     "	tag_id INT NOT NULL" +
+		     ");");
+		   
+		   // imported photo checksums
+		   database.execSQL("CREATE TABLE IF NOT EXISTS "
+		     + "imports"
+		     + " (" +
+		     "	checksum VARCHAR NOT NULL UNIQUE" +
 		     ");");
 		   
 		   // default categories
@@ -615,10 +649,12 @@ public class DatabaseManager extends SQLiteOpenHelper{
     	  database.delete("categories", null, null);
     	  database.delete("tag2photo", null, null);
     	  database.delete("category2photo", null, null);
+    	  database.delete("imports", null, null);
     	  database.execSQL("DROP TABLE IF EXISTS `photos`;");
     	  database.execSQL("DROP TABLE IF EXISTS `tags`;");
     	  database.execSQL("DROP TABLE IF EXISTS `categories`;");
     	  database.execSQL("DROP TABLE IF EXISTS `tag2photo`;");
     	  database.execSQL("DROP TABLE IF EXISTS `category2photo`;");
+    	  database.execSQL("DROP TABLE IF EXISTS `imports`;");
       }
 }

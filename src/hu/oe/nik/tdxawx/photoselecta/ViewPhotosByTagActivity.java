@@ -28,19 +28,18 @@ import android.view.View.OnHoverListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup.LayoutParams;
 import android.webkit.WebSettings.TextSize;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.GridView;
-import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class ViewPhotosByCategoryActivity extends Activity {
+public class ViewPhotosByTagActivity extends Activity {
 
 	private Utility utils;
 	private ArrayList<String> imagePaths = new ArrayList<String>();
-	private ViewPhotosAdapter adapter;
 	//private GridView gridView;
 	private ImageView deletebutton;
 	private DraggableGridView grid;
@@ -49,14 +48,25 @@ public class ViewPhotosByCategoryActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.view_photos_by_category);
-		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-		buildPhotoList();
+		setContentView(R.layout.view_photos_by_tag);
+		
+		TextView tagtext = (TextView) findViewById(R.id.tagtext);
+		AutoCompleteTextView tagname = (AutoCompleteTextView) findViewById(R.id.tagname);
+        Typeface HelveticaNeueCB = Typeface.createFromAsset(getAssets(), "HelveticaNeue-CondensedBold.ttf");
+        tagtext.setTypeface(HelveticaNeueCB);
+        tagname.setTypeface(HelveticaNeueCB);
+        
+        DatabaseManager db = new DatabaseManager(getApplicationContext());
+        final CharSequence[] taglist = db.getTags();
+        ArrayAdapter<CharSequence> tagadapter = new ArrayAdapter<CharSequence>(ViewPhotosByTagActivity.this, R.id.tagname, taglist); 
+        tagname.setAdapter(tagadapter);
+		
+		//buildPhotoList();
 	}
 	
 	@Override
 	public void onBackPressed() {
-		Intent i = new Intent(ViewPhotosByCategoryActivity.this, MainActivity.class);
+		Intent i = new Intent(ViewPhotosByTagActivity.this, MainActivity.class);
 		setResult(1, i);
 		finish();
 	}
@@ -69,7 +79,7 @@ public class ViewPhotosByCategoryActivity extends Activity {
 		db.getCategory2Photos();
 		CharSequence[] categories = db.getCategories();
 		for (int i = 0; i < categories.length; i++) {
-			CategorizedPhotoAdapter adapter = new CategorizedPhotoAdapter(ViewPhotosByCategoryActivity.this, 320, categories[i]);
+			CategorizedPhotoAdapter adapter = new CategorizedPhotoAdapter(ViewPhotosByTagActivity.this, 320, categories[i]);
 			if (adapter.getCount() > 0) {
 				TextView tv = new TextView(getApplicationContext());
 				tv.setText(categories[i]);
@@ -80,22 +90,11 @@ public class ViewPhotosByCategoryActivity extends Activity {
 				tv.setTextSize(18.0f);
 				tv.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
 				layout.addView(tv);
-				HorizontalScrollView hscv = new HorizontalScrollView(getApplicationContext());
-				LinearLayout ll = new LinearLayout(getApplicationContext());
-				ll.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-				for (int n = 0; n < adapter.getCount(); n++) {
-					ImageView iv = (ImageView)adapter.getView(n, null, null);
-					LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-					lp.setMargins(8, 8, 8, 8);
-					iv.setLayoutParams(lp);
-					ll.addView(iv);
-				}
-				//GridView gv = new GridView(getApplicationContext());
-				//gv.setNumColumns(9999);
-				//gv.setPadding(8, 8, 8, 8);
-				//gv.setAdapter(adapter);
-				hscv.addView(ll);
-				layout.addView(hscv);
+				GridView gv = new GridView(getApplicationContext());
+				gv.setNumColumns(3);
+				gv.setPadding(8, 8, 8, 8);
+				gv.setAdapter(adapter);
+				layout.addView(gv);
 			}
 		}
 	}
