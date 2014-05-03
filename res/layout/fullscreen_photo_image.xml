@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent"
+    android:background="#000000" >
 
     <hu.oe.nik.tdxawx.photoselecta.utility.TouchImageView
         android:id="@+id/photo_image"
@@ -12,16 +13,14 @@
     <Button
         android:id="@+id/btn_close_photo"
         android:layout_width="wrap_content"
-        android:layout_height="30dp"
+        android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
         android:layout_marginRight="15dp"
         android:layout_marginTop="15dp"
-        android:paddingTop="2dp"
-        android:paddingBottom="2dp"
+        android:padding="8dp"
         android:textColor="#ffffff"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
+        android:background="#333333"
         android:text="Close" />
 
 </RelativeLayout>

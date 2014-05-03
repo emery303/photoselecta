@@ -9,11 +9,14 @@ import java.util.Comparator;
 import java.util.List;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.graphics.Typeface;
+import android.inputmethodservice.Keyboard.Key;
 import android.os.Environment;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -27,6 +30,7 @@ public class FolderPicker implements OnItemClickListener, OnClickListener
     public interface Result
     {
         void onChooseDirectory( String dir );
+        void onCancel( boolean cancelled );
     }
  
     List<File> m_entries = new ArrayList< File >();
@@ -128,9 +132,23 @@ public class FolderPicker implements OnItemClickListener, OnClickListener
  
         builder.setNegativeButton( "Cancel", new DialogInterface.OnClickListener() {
                public void onClick(DialogInterface dialog, int id) {
-                    dialog.cancel();
+            	   if ( m_result != null )
+                       m_result.onCancel( true );
+            	   dialog.dismiss();
                }
            });
+        
+        builder.setOnKeyListener(new DialogInterface.OnKeyListener() {
+			@Override
+			public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+				if (keyCode == KeyEvent.KEYCODE_BACK) {
+					 if ( m_result != null )
+	                       m_result.onCancel( true );
+					 dialog.dismiss();
+				}
+				return true;
+			}
+		});
  
         AlertDialog m_alertDialog = builder.create();
         m_list = m_alertDialog.getListView();

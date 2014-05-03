@@ -533,6 +533,18 @@ public class DatabaseManager extends SQLiteOpenHelper{
 		       }
 		       cur2.close();
 		   }
+		   
+		   // default tags
+		   Cursor cur3 = database.rawQuery("SELECT COUNT(*) FROM tags", null);
+		   if (cur3 != null) {
+		       cur3.moveToFirst();
+		       if (cur3.getInt(0) == 0) {
+		    	   database.execSQL("INSERT INTO tags (name, description) VALUES ('Test', '');");
+				   database.execSQL("INSERT INTO tags (name, description) VALUES ('Photo', '');");
+				   database.execSQL("INSERT INTO tags (name, description) VALUES ('Some tag', '');");
+		       }
+		       cur3.close();
+		   }
       }
       
       public void checkFiles() {

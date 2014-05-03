@@ -314,8 +314,13 @@ public class MainActivity extends FragmentActivity {
 			@Override
 			public void onClick(View v) {
 				v.startAnimation( (Animation)AnimationUtils.loadAnimation(v.getContext(), R.anim.bounce) );
-				Intent viewphotosbycat = new Intent(MainActivity.this, ViewPhotosByCategoryActivity.class);
-				startActivityForResult(viewphotosbycat, 1002);
+				v.postDelayed(new Runnable() {
+				    @Override
+				    public void run() {
+				    	Intent viewphotosbycat = new Intent(MainActivity.this, ViewPhotosByCategoryActivity.class);
+						startActivityForResult(viewphotosbycat, 1002);
+				    }
+				}, 250);
 			}
 		});
 		
@@ -323,8 +328,13 @@ public class MainActivity extends FragmentActivity {
 			@Override
 			public void onClick(View v) {
 				v.startAnimation( (Animation)AnimationUtils.loadAnimation(v.getContext(), R.anim.bounce) );
-				Intent viewphotosbytag = new Intent(MainActivity.this, ViewPhotosByTagActivity.class);
-				startActivityForResult(viewphotosbytag, 1003);
+				v.postDelayed(new Runnable() {
+				    @Override
+				    public void run() {
+				    	Intent viewphotosbytag = new Intent(MainActivity.this, ViewPhotosByTagActivity.class);
+						startActivityForResult(viewphotosbytag, 1003);
+				    }
+				}, 250);
 			}
 		});
 		
@@ -332,8 +342,13 @@ public class MainActivity extends FragmentActivity {
 			@Override
 			public void onClick(View v) {
 				v.startAnimation( (Animation)AnimationUtils.loadAnimation(v.getContext(), R.anim.bounce) );
-				Intent importfolder = new Intent(MainActivity.this, ImportFolderActivity.class);
-				startActivityForResult(importfolder, 1004);
+				v.postDelayed(new Runnable() {
+				    @Override
+				    public void run() {
+				    	Intent importfolder = new Intent(MainActivity.this, ImportFolderActivity.class);
+						startActivityForResult(importfolder, 1004);
+				    }
+				}, 250);
 			}
 		});
 		
@@ -341,8 +356,13 @@ public class MainActivity extends FragmentActivity {
 			@Override
 			public void onClick(View v) {
 				v.startAnimation( (Animation)AnimationUtils.loadAnimation(v.getContext(), R.anim.bounce) );
-				Intent sendphotos = new Intent(MainActivity.this, ImportFolderActivity.class);
-				startActivityForResult(sendphotos, 1005);
+				v.postDelayed(new Runnable() {
+				    @Override
+				    public void run() {
+				    	Intent sendphotos = new Intent(MainActivity.this, ImportFolderActivity.class);
+						startActivityForResult(sendphotos, 1005);
+				    }
+				}, 250);
 			}
 		});
 		
@@ -351,8 +371,13 @@ public class MainActivity extends FragmentActivity {
 			@Override
 			public void onClick(View v) {
 				v.startAnimation( (Animation)AnimationUtils.loadAnimation(v.getContext(), R.anim.bounce) );
-				Intent settings = new Intent(MainActivity.this, SettingsActivity.class);
-				startActivityForResult(settings, 1006);
+				v.postDelayed(new Runnable() {
+				    @Override
+				    public void run() {
+				    	Intent settings = new Intent(MainActivity.this, SettingsActivity.class);
+						startActivityForResult(settings, 1006);
+				    }
+				}, 250);				
 			}
 		});
 	}

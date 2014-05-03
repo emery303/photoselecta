@@ -1,6 +1,7 @@
 package hu.oe.nik.tdxawx.photoselecta;
 
 import hu.oe.nik.tdxawx.photoselecta.adapters.CategorizedPhotoAdapter;
+import hu.oe.nik.tdxawx.photoselecta.adapters.TaggedPhotoAdapter;
 import hu.oe.nik.tdxawx.photoselecta.adapters.ViewPhotosAdapter;
 import hu.oe.nik.tdxawx.photoselecta.utility.Constants;
 import hu.oe.nik.tdxawx.photoselecta.utility.DatabaseManager;
@@ -73,13 +74,13 @@ public class ViewPhotosByTagActivity extends Activity {
 	
 	public void buildPhotoList() {
 		Typeface HelveticaNeueCB = Typeface.createFromAsset(getAssets(), "HelveticaNeue-CondensedBold.ttf");
-		LinearLayout layout = (LinearLayout)findViewById(R.id.categoryphotolist);
+		LinearLayout layout = (LinearLayout)findViewById(R.id.photolistbytag);
 		DatabaseManager db = new DatabaseManager(getApplicationContext());
 		//db.assignRandomCategories();
 		db.getCategory2Photos();
 		CharSequence[] categories = db.getCategories();
 		for (int i = 0; i < categories.length; i++) {
-			CategorizedPhotoAdapter adapter = new CategorizedPhotoAdapter(ViewPhotosByTagActivity.this, 320, categories[i]);
+			TaggedPhotoAdapter adapter = new TaggedPhotoAdapter(ViewPhotosByTagActivity.this, 320, 320, categories[i]);
 			if (adapter.getCount() > 0) {
 				TextView tv = new TextView(getApplicationContext());
 				tv.setText(categories[i]);

@@ -8,6 +8,7 @@ import hu.oe.nik.tdxawx.photoselecta.utility.ImageAnalyzer;
 import java.util.ArrayList;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -21,7 +22,12 @@ import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.GridView;
+import android.widget.MultiAutoCompleteTextView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,7 +37,6 @@ public class AnalyzerActivity extends Activity {
 	private Handler aH = new Handler();
 	ProgressBar pb;
 	TextView pbtext;
-	//final CannyEdgeDetector edgeDetector = new CannyEdgeDetector();
 	final ImageAnalyzer ia = new ImageAnalyzer();
 	
 	private boolean showSwipeInfo = false;
@@ -69,7 +74,7 @@ public class AnalyzerActivity extends Activity {
                 
                 for (int i = 0; i < files.size(); i++) {
                 	String path = files.get(i);
-                	b = decodeSampledBitmapFromFile(path, 640, 480);
+                	b = decodeSampledBitmapFromFile(path, 400, 300);
                 	//int size = b.getRowBytes()*b.getHeight();
                 	ia.setBitmap(b);
                 	photo = new Photo(b, path);
@@ -93,19 +98,19 @@ public class AnalyzerActivity extends Activity {
         					
         					if (progress >= 100) {
         						photos.get(best).bestInSession = true;
-        						DraggableGridView g = (DraggableGridView)findViewById(R.id.analyzergrid);
-        						AnalyzerAdapter adapter = new AnalyzerAdapter(AnalyzerActivity.this, photos);
-        						for (int i = 0; i < adapter.getCount(); i++) {
-        							g.addView(adapter.getView(i, null, g));
-        							g.addPath(String.valueOf(adapter.getItem(i)));
-        						}
-        		                //g.setAdapter(new AnalyzerAdapter(AnalyzerActivity.this, photos));
+        						GridView g = (GridView)findViewById(R.id.analyzergrid);
+        						//AnalyzerAdapter adapter = new AnalyzerAdapter(AnalyzerActivity.this, photos);
+        						//for (int i = 0; i < adapter.getCount(); i++) {
+        						//	g.addView(adapter.getView(i, null, g));
+        							//g.addPath(String.valueOf(adapter.getItem(i)));
+        						//}
+        		                g.setAdapter(new AnalyzerAdapter(AnalyzerActivity.this, photos));
         		                registerForContextMenu(g);
         		                //Toast.makeText(AnalyzerActivity.this, "Click the photos you want to delete!", Toast.LENGTH_LONG).show();
         		                pb.setVisibility(8);
         		                pbtext.setVisibility(8);
         		                
-        		                /*
+        		                
         		                if (showSwipeInfo) {
 	        		                final AlertDialog info = new AlertDialog.Builder(AnalyzerActivity.this).create();
 	        		            	info.setTitle("Review photos");
@@ -118,7 +123,6 @@ public class AnalyzerActivity extends Activity {
 	        		                });
 	        		            	info.show();
         		                }
-        		                */
         					}
         				}
         			});
@@ -149,17 +153,16 @@ public class AnalyzerActivity extends Activity {
             final ArrayList selectedItems=new ArrayList();
             
             DatabaseManager db = new DatabaseManager(getApplicationContext());
-            final CharSequence[] items = db.getTags();
+            final CharSequence[] alltags = db.getTags();
             final CharSequence[] currentTags = db.getTagsByPhoto(photo_id);
-            db.CloseDB();
             
-            final boolean[] checked = new boolean[items.length];
+            final boolean[] checked = new boolean[alltags.length];
             
-            for (int n = 0; n < items.length; n++) {
+            for (int n = 0; n < alltags.length; n++) {
             	checked[n] = false;
             	if (currentTags != null) {
 	            	for (int m = 0; m < currentTags.length; m++) {
-	                	if (currentTags[m] == items[n]) {
+	                	if (currentTags[m] == alltags[n]) {
 	                		checked[n] = true;
 	                		break;
 	                	}
@@ -168,9 +171,9 @@ public class AnalyzerActivity extends Activity {
             }
 
             //final CharSequence[] items = {"one", "two", "three"};
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            AlertDialog.Builder builder = new AlertDialog.Builder(AnalyzerActivity.this);
             builder.setTitle("Select the tags to assign");
-            builder.setMultiChoiceItems(items, checked,
+            /*builder.setMultiChoiceItems(items, checked,
                     new DialogInterface.OnMultiChoiceClickListener() {
              @Override
              public void onClick(DialogInterface dialog, int indexSelected,
@@ -181,13 +184,14 @@ public class AnalyzerActivity extends Activity {
                      selectedItems.remove(Integer.valueOf(indexSelected));
                  }
              }
-             }).setPositiveButton("OK", new DialogInterface.OnClickListener() {
+             })*/
+            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                  @Override
                  public void onClick(DialogInterface dialog, int id) {
                 	 String tags = "";
                 	 DatabaseManager db = new DatabaseManager(getApplicationContext());
                 	 for (int i = 0; i < selectedItems.size(); i++) {
-                		 CharSequence tagname = items[Integer.valueOf(selectedItems.get(i).toString())];
+                		 CharSequence tagname = alltags[Integer.valueOf(selectedItems.get(i).toString())];
                 		 db.assignTagToPhoto(photo_id, db.getTagIdByName(tagname.toString()));
                 		 tags += " "+tagname;
                 	 }
@@ -201,7 +205,30 @@ public class AnalyzerActivity extends Activity {
                  }
              });
 
-            AlertDialog dialog = builder.create();
+            //AlertDialog dialog = builder.create();
+            final Dialog dialog = new Dialog(AnalyzerActivity.this);
+            dialog.setTitle("Assign tag to photo");
+            dialog.setContentView(R.layout.assign_tag);
+            Typeface HelveticaNeueCB = Typeface.createFromAsset(getAssets(), "HelveticaNeue-CondensedBold.ttf");
+            ((TextView)(dialog.findViewById(R.id.addnewtag_text))).setTypeface(HelveticaNeueCB);
+            ArrayAdapter<CharSequence> tagsadapter = new ArrayAdapter<CharSequence>(AnalyzerActivity.this, android.R.layout.simple_dropdown_item_1line, alltags);
+            final MultiAutoCompleteTextView tags = (MultiAutoCompleteTextView)dialog.findViewById(R.id.selectedtags);
+            tags.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
+            tags.setAdapter(tagsadapter);
+            tags.setTypeface(HelveticaNeueCB);
+            Button btn_cancel = (Button)dialog.findViewById(R.id.tag_cancel);
+            Button btn_assign = (Button)dialog.findViewById(R.id.tag_ok);
+            btn_cancel.setOnClickListener(new OnClickListener() {
+				public void onClick(View arg0) {
+					dialog.cancel();
+				}
+			});
+            btn_assign.setOnClickListener(new OnClickListener() {
+				public void onClick(View arg0) {
+					String t = tags.getText().toString();
+					Toast.makeText(AnalyzerActivity.this, t, Toast.LENGTH_LONG).show();
+				}
+			});
             dialog.show();
     		//--- tag list end ---
 

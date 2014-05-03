@@ -7,12 +7,14 @@ import hu.oe.nik.tdxawx.photoselecta.utility.Utility;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
+import android.widget.Button;
+import android.widget.TextView;
 
 public class FullscreenPhotoActivity extends Activity{
 
-	private Utility utils;
 	private FullscreenPhotoAdapter adapter;
 	private ViewPager viewPager;
 
@@ -22,10 +24,7 @@ public class FullscreenPhotoActivity extends Activity{
 		setContentView(R.layout.fullscreen_photo);
 		
 		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-
 		viewPager = (ViewPager) findViewById(R.id.fullscreen_photo_pager);
-
-		utils = new Utility(getApplicationContext());
 
 		Intent i = getIntent();
 		String path = i.getStringExtra("path");

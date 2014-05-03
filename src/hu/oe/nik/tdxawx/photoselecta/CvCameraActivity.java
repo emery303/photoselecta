@@ -123,6 +123,8 @@ public class CvCameraActivity extends Activity implements /*OnTouchListener,*/ C
         mOpenCvCameraView.setCvCameraViewListener(this);
         
         Button btn_shutter = (Button)findViewById(R.id.btn_shutter);
+        Typeface HelveticaNeueCB = Typeface.createFromAsset(getAssets(), "HelveticaNeue-CondensedBold.ttf");
+        btn_shutter.setTypeface(HelveticaNeueCB);
 		btn_shutter.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -130,7 +132,6 @@ public class CvCameraActivity extends Activity implements /*OnTouchListener,*/ C
 			}
 		});
 		
-		Typeface HelveticaNeueCB = Typeface.createFromAsset(getAssets(), "HelveticaNeue-CondensedBold.ttf");
 		categorytext = (TextView)findViewById(R.id.categorytext);
         categorytext.setTypeface(HelveticaNeueCB);
     }

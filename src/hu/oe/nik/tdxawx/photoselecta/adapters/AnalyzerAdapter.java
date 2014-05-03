@@ -23,6 +23,7 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -32,8 +33,8 @@ public class AnalyzerAdapter extends BaseAdapter {
 	 private Context context;  
 	 private ArrayList<Photo> photos;
 	 
-	 private static final int THUMBNAIL_WIDTH = 240;
-	 private static final int THUMBNAIL_HEIGHT = 240;
+	 private static final int THUMBNAIL_WIDTH = 400;
+	 private static final int THUMBNAIL_HEIGHT = 300;
 	 
 	 private GestureDetector gd;
 	 private DatabaseManager db;
@@ -73,14 +74,14 @@ public class AnalyzerAdapter extends BaseAdapter {
 	    	 Bitmap b = Bitmap.createScaledBitmap(p.getBitmap(), THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT, false);
 	    	 Bitmap.Config bitmapConfig = b.getConfig();
 	 		 if(bitmapConfig == null) {
-	 		    bitmapConfig = Bitmap.Config.ARGB_8888;
+	 		    bitmapConfig = Bitmap.Config.RGB_565;
 	 		 }
 	    	 Bitmap bcopy = b.copy(bitmapConfig, true);
 	    	 Canvas c = new Canvas(bcopy);
 	    	 Bitmap tick = BitmapFactory.decodeResource(parent.getResources(), R.drawable.tick);
 	    	 Paint pnt = new Paint();
 	    	 pnt.setStyle(Style.FILL);
-	    	 c.drawBitmap(tick, 10, 160, pnt);
+	    	 c.drawBitmap(tick, 10, 10, pnt);
 	    	 bitmap = bcopy;
 	     } else {
 	    	 //bitmap = p.makeThumbnailWithMeta(THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT);
@@ -100,32 +101,37 @@ public class AnalyzerAdapter extends BaseAdapter {
 		 iv.setId(photo_dbid);
 		 final int itempos = position; 
 		 
-		 /*
 		 iv.setOnTouchListener(new View.OnTouchListener() {			 
 			@Override
 			public boolean onTouch(final View view1, final MotionEvent event) {
 				if (gd.onTouchEvent(event)) {
 					if (photos.size() > 1) {
 						if (photos.get(itempos).bestInSession)
-							Toast.makeText(context, "You can't delete the sharpest photo!", Toast.LENGTH_SHORT).show();
+							Toast.makeText(context, "You can't delete the best photo!", Toast.LENGTH_SHORT).show();
 						else {
-							String path = photos.get(itempos).getPath();
-							photos.remove(itempos);
-							db = new DatabaseManager(context);
-							db.deletePhotoByPath(path);
-							db.CloseDB();
-							File photo_file = new File(path);
-							photo_file.delete();
-							AnalyzerAdapter.this.notifyDataSetChanged();
+							view1.startAnimation( AnimationUtils.loadAnimation(context, R.anim.fadeout) );
+							view1.postDelayed(new Runnable() {
+								
+								@Override
+								public void run() {
+									String path = photos.get(itempos).getPath();
+									photos.remove(itempos);
+									db = new DatabaseManager(context);
+									db.deletePhotoByPath(path);
+									db.CloseDB();
+									File photo_file = new File(path);
+									photo_file.delete();
+									AnalyzerAdapter.this.notifyDataSetChanged();
+								}
+							}, 250);
 						}
 					}
 				} else {
 					
 				}
-				return true;
+				return false;
 			}
 		  });
-		  */
 		 
 		 /*
 		 iv.setOnClickListener(new View.OnClickListener() {

@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.PixelFormat;
+import android.graphics.Typeface;
 import android.hardware.Camera;
 import android.hardware.Camera.PictureCallback;
 import android.hardware.Camera.ShutterCallback;
@@ -26,6 +27,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class CameraActivity extends Activity implements SurfaceHolder.Callback {
@@ -70,6 +72,8 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 		sh.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 		
 		Button btn_shutter = (Button)findViewById(R.id.btn_shutter);
+        Typeface HelveticaNeueCB = Typeface.createFromAsset(getAssets(), "HelveticaNeue-CondensedBold.ttf");
+        btn_shutter.setTypeface(HelveticaNeueCB);
 		btn_shutter.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {

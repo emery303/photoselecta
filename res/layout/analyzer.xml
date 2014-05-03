@@ -18,17 +18,20 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:text="Analyzing"
+        android:layout_below="@id/analyzerprogress"
+        android:layout_marginTop="10dp"
+        android:text="Analyzing photos..."
         android:textColor="#fff"
         android:textSize="32sp" />
 
-    <hu.oe.nik.tdxawx.photoselecta.utility.DraggableGridView
+    <GridView
         android:id="@+id/analyzergrid"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
+        android:numColumns="2"
+        android:columnWidth="320dp"
         android:gravity="center" />
     
 	<ImageView

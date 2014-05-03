@@ -60,9 +60,20 @@ public class ImportFolderActivity extends Activity {
 			public void onChooseDirectory(String dir) {
 				importFolder(dir);
 			}
+			
+			public void onCancel(boolean cancelled) {
+				if (cancelled) {
+					finish();
+				}	
+			}
 		}, null);
         
     }
+	
+	@Override
+	public void onBackPressed() {
+		finish();
+	};
 	
 	private void importFolder(String path) {
 		final String folderPath = path;

@@ -19,6 +19,11 @@
         android:layout_alignParentRight="true"
         android:layout_marginBottom="10dp"
         android:layout_marginRight="10dp"
+        android:textSize="18sp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:textColor="#ffffff"
+        android:background="#333333"
         android:text="@string/shutter_button_text" 
         />
 

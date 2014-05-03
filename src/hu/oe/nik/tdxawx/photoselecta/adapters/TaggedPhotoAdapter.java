@@ -22,14 +22,14 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 
-public class CategorizedPhotoAdapter extends BaseAdapter {
+public class TaggedPhotoAdapter extends BaseAdapter {
 
 	private Activity _activity;
 	private ArrayList<String> _filePaths = new ArrayList<String>();
 	private int imageWidth;
 	private int imageHeight;
 
-	public CategorizedPhotoAdapter(Activity activity, int imageWidth, int imageHeight, CharSequence catname) {
+	public TaggedPhotoAdapter(Activity activity, int imageWidth, int imageHeight, CharSequence catname) {
 		DatabaseManager db = new DatabaseManager(activity.getApplicationContext());
 
 		this._activity = activity;
@@ -86,7 +86,7 @@ public class CategorizedPhotoAdapter extends BaseAdapter {
 			    );
 		}
 		
-		imageView.setImageBitmap(Bitmap.createScaledBitmap(thumbnail, imageWidth, imageHeight, true));
+		imageView.setImageBitmap(thumbnail);
 
 		imageView.setOnClickListener(new OnImageClickListener(_filePaths.get(position)));
 
