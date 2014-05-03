@@ -19,10 +19,12 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
+import android.graphics.Path.FillType;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.view.animation.AnimationUtils;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
@@ -33,8 +35,8 @@ public class AnalyzerAdapter extends BaseAdapter {
 	 private Context context;  
 	 private ArrayList<Photo> photos;
 	 
-	 private static final int THUMBNAIL_WIDTH = 400;
-	 private static final int THUMBNAIL_HEIGHT = 300;
+	 private static final int THUMBNAIL_WIDTH = 640;
+	 private static final int THUMBNAIL_HEIGHT = 480;
 	 
 	 private GestureDetector gd;
 	 private DatabaseManager db;
@@ -63,7 +65,6 @@ public class AnalyzerAdapter extends BaseAdapter {
 	     if (convertView == null) {    
 	    	 iv = new ImageView(context);
 	    	 iv.setLayoutParams(new GridView.LayoutParams(THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT));  
-	    	 iv.setPadding(8,8,8,8);
 	     } else {  
 	    	 iv = (ImageView)convertView;  
 	     }
@@ -84,16 +85,9 @@ public class AnalyzerAdapter extends BaseAdapter {
 	    	 c.drawBitmap(tick, 10, 10, pnt);
 	    	 bitmap = bcopy;
 	     } else {
-	    	 //bitmap = p.makeThumbnailWithMeta(THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT);
 	    	 bitmap = Bitmap.createScaledBitmap(p.getBitmap(), THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT, false);
 	     }
 	     iv.setImageBitmap(bitmap);
-	  
-		 if (p.Brightness == 1) {
-			 iv.setBackgroundColor(Color.WHITE);
-		 } else {
-			 iv.setBackgroundColor(Color.BLACK);
-		 }
 		 
 		 db = new DatabaseManager(context);
 		 int photo_dbid = db.getPhotoIdByPath(p.getPath());
@@ -103,44 +97,33 @@ public class AnalyzerAdapter extends BaseAdapter {
 		 
 		 iv.setOnTouchListener(new View.OnTouchListener() {			 
 			@Override
-			public boolean onTouch(final View view1, final MotionEvent event) {
+			public boolean onTouch(final View v, final MotionEvent event) {
 				if (gd.onTouchEvent(event)) {
-					if (photos.size() > 1) {
-						if (photos.get(itempos).bestInSession)
-							Toast.makeText(context, "You can't delete the best photo!", Toast.LENGTH_SHORT).show();
-						else {
-							view1.startAnimation( AnimationUtils.loadAnimation(context, R.anim.fadeout) );
-							view1.postDelayed(new Runnable() {
-								
-								@Override
-								public void run() {
-									String path = photos.get(itempos).getPath();
-									photos.remove(itempos);
-									db = new DatabaseManager(context);
-									db.deletePhotoByPath(path);
-									db.CloseDB();
-									File photo_file = new File(path);
-									photo_file.delete();
-									AnalyzerAdapter.this.notifyDataSetChanged();
-								}
-							}, 250);
-						}
+					if (photos.size() > 0) {
+						v.startAnimation( AnimationUtils.loadAnimation(context, R.anim.fadeout) );
+						v.postDelayed(new Runnable() {
+							
+							@Override
+							public void run() {
+								String path = photos.get(itempos).getPath();
+								photos.remove(itempos);
+								db = new DatabaseManager(context);
+								db.deletePhotoByPath(path);
+								db.CloseDB();
+								File photo_file = new File(path);
+								photo_file.delete();
+								AnalyzerAdapter.this.notifyDataSetChanged();
+							}
+						}, 250);
 					}
 				} else {
-					
+					if (event.getAction() == MotionEvent.ACTION_UP) {
+						v.performLongClick();
+					}
 				}
-				return false;
+				return true;
 			}
 		  });
-		 
-		 /*
-		 iv.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				Toast.makeText(v.getContext(), "click!", Toast.LENGTH_SHORT).show();
-			}
-		 });
-		 */
 		  
 		 return iv;  
 	 }  

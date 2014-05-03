@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <string name="app_facebook_id">755432551168112</string>
     <string name="app_name">PhotoSelecta</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>

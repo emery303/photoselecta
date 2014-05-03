@@ -79,6 +79,57 @@ public class DatabaseManager extends SQLiteOpenHelper{
     	  }
       }
       
+      public int[] getPhotosByMultipleTags(CharSequence[] tags) {
+    	  if (this.database != null && tags != null && tags.length != 0) {
+    		  String in = "(";
+    		  for (int i=0; i < tags.length; i++) {
+    			  String tagname = tags[i].toString().trim();
+    			  if (tagname != "") {
+	    			  int tag_id = getTagIdByName(tagname);
+	    			  if (tag_id != 0) {
+	    				  in += String.valueOf(tag_id);
+	    				  if (i != tags.length - 1) {
+	        				  in +=",";
+	        			  }
+	    			  }
+    			  }
+    		  }    		  
+    		  in += ")";
+    		  
+    		  Log.d("", "PS DB "+in);
+
+    		  Cursor cur = database.rawQuery("SELECT photo_id FROM tag2photo WHERE tag_id IN "+in+" GROUP BY photo_id HAVING COUNT(photo_id) = "+tags.length+"", null);
+    		  if (cur != null && cur.getCount() > 0) {
+    			  cur.moveToFirst();
+    			  int[] result = new int[cur.getCount()];
+    			  int n = 0;
+    			  do {
+    				  result[n] = cur.getInt(0);
+    				  n++;
+    			  } while (cur.moveToNext());
+    			  cur.close();
+	    		  return result;
+    		  } else {
+    			  return new int[0];  
+    		  }
+    	  } else {
+    		  return new int[0];
+    	  }
+      }
+      
+      public String[] getPhotoPathsByMultipleTags(CharSequence[] tags) {
+    	  if (this.database != null && tags != null && tags.length != 0) {
+    		  int[] ids = getPhotosByMultipleTags(tags);
+    		  String[] result = new String[ids.length];
+    		  for (int i=0; i < ids.length; i++) {
+    			  result[i] = getPhotoPathById(ids[i]);
+    		  }
+    		  return result;
+    	  } else {
+    		  return new String[0];
+    	  }
+      }
+      
       public ArrayList<String> getPhotosByCategory(CharSequence category) {
     	  if (this.database != null && category != null && category != "") {
     		  int category_id = getCategoryIdByName(category.toString());
@@ -199,18 +250,20 @@ public class DatabaseManager extends SQLiteOpenHelper{
     		  return false;
       }
       
-      public boolean insertNewTag(String tagname) {
+      public int insertNewTag(String tagname) {
     	  if (this.database != null) {
-    		  database.rawQuery("DELETE FROM tags WHERE name = '"+tagname+"'", null);
-    		  Cursor cur = database.rawQuery("INSERT INTO tags (name) VALUES ('"+tagname+"')", null);
-    		  if (cur != null) {
+    		  Cursor cur = database.rawQuery("SELECT id FROM tags WHERE LOWER(name) = '"+ tagname.toLowerCase() +"'", null);
+    		  if (cur.getCount() > 0) {
+    			  cur.moveToFirst();
+    			  int id = cur.getInt(0);
     			  cur.close();
-    			  return true;
+    			  return id;
     		  } else {
-    			  return false;
+    			  database.execSQL("INSERT INTO tags (name) VALUES ('"+tagname+"');");
+    			  return insertNewTag(tagname);
     		  }
     	  } else
-    		  return false;
+    		  return 0;
       }
       
       public boolean insertImportChecksum(String hash) {
@@ -403,8 +456,25 @@ public class DatabaseManager extends SQLiteOpenHelper{
       
       public CharSequence[] getCategories() {
     	  CharSequence[] empty = {"-"};
-    	  Cursor cur = database.rawQuery("SELECT name FROM categories", null);
+    	  Cursor cur = database.rawQuery("SELECT name FROM categories ORDER BY name ASC", null);
 		  if (cur != null) {
+		       cur.moveToFirst();
+		       CharSequence[] result = new CharSequence[cur.getCount()];
+		       int n = 0;
+		       do {
+		    	   result[n] = cur.getString(0);
+		    	   n++;
+		       } while (cur.moveToNext());
+		       cur.close();
+		       return result;
+		  }
+		  return empty;
+      }
+      
+      public CharSequence[] getTagsByPhotoId(int photo_id) {
+    	  CharSequence[] empty = { };
+    	  Cursor cur = database.rawQuery("SELECT name FROM tags WHERE id IN (SELECT tag_id FROM tag2photo WHERE photo_id = '"+photo_id+"') ORDER BY name ASC", null);
+		  if (cur != null && cur.getCount() > 0) {
 		       cur.moveToFirst();
 		       CharSequence[] result = new CharSequence[cur.getCount()];
 		       int n = 0;
@@ -420,7 +490,7 @@ public class DatabaseManager extends SQLiteOpenHelper{
       
       public CharSequence[] getTags() {
     	  CharSequence[] empty = { };
-    	  Cursor cur = database.rawQuery("SELECT name FROM tags", null);
+    	  Cursor cur = database.rawQuery("SELECT name FROM tags ORDER BY name ASC", null);
 		  if (cur != null && cur.getCount() > 0) {
 		       cur.moveToFirst();
 		       CharSequence[] result = new CharSequence[cur.getCount()];
@@ -433,27 +503,6 @@ public class DatabaseManager extends SQLiteOpenHelper{
 		       return result;
 		  }
 		  return empty;
-      }
-      
-      public CharSequence[] getTagsByPhoto(int photo_id) {
-    	  Cursor cur = database.rawQuery("SELECT t.name FROM tags t " +
-    	  		" JOIN tag2photo t2p ON t.id = t2p.tag_id " +
-    	  		" WHERE t2p.photo_id = '"+String.valueOf(photo_id)+"'", null);
-		  if (cur != null) {
-		       cur.moveToFirst();
-		       int cnt = cur.getCount();
-		       if (cnt > 0) {
-			       CharSequence[] result = new CharSequence[cnt];
-			       int n = 0;
-			       do {
-			    	   result[n] = cur.getString(0);
-			    	   n++;
-			       } while (cur.moveToNext());
-			       cur.close();
-			       return result;
-		       }
-		  }
-		  return null;
       }
 
       @Override

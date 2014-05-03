@@ -28,9 +28,10 @@ public class CategorizedPhotoAdapter extends BaseAdapter {
 	private ArrayList<String> _filePaths = new ArrayList<String>();
 	private int imageWidth;
 	private int imageHeight;
+	private DatabaseManager db;
 
 	public CategorizedPhotoAdapter(Activity activity, int imageWidth, int imageHeight, CharSequence catname) {
-		DatabaseManager db = new DatabaseManager(activity.getApplicationContext());
+		db = new DatabaseManager(activity.getApplicationContext());
 
 		this._activity = activity;
 		this._filePaths = db.getPhotosByCategory(catname);
@@ -61,35 +62,38 @@ public class CategorizedPhotoAdapter extends BaseAdapter {
 		} else {
 			imageView = (ImageView) convertView;
 		}
-
-		Bitmap image = decodeFile(_filePaths.get(position), imageWidth,	imageHeight);
-
-		imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-		imageView.setLayoutParams(new GridView.LayoutParams(imageWidth,	imageHeight));
-		
-		Bitmap thumbnail;
-		if (image.getWidth() >= image.getHeight()){
-			thumbnail = Bitmap.createBitmap(
-				image, 
-				image.getWidth()/2 - image.getHeight()/2,
-			    0,
-			    image.getHeight(), 
-			    image.getHeight()
-			    );
-		} else {
+		File f = new File(_filePaths.get(position));
+		if (f.exists()) {
+			Bitmap image = decodeFile(_filePaths.get(position), imageWidth,	imageHeight);
+	
+			imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+			imageView.setLayoutParams(new GridView.LayoutParams(imageWidth,	imageHeight));
+			
+			Bitmap thumbnail;
+			if (image.getWidth() >= image.getHeight()){
 				thumbnail = Bitmap.createBitmap(
-				image,
-			    0, 
-			    image.getHeight()/2 - image.getWidth()/2,
-			    image.getWidth(),
-			    image.getWidth() 
-			    );
-		}
+					image, 
+					image.getWidth()/2 - image.getHeight()/2,
+				    0,
+				    image.getHeight(), 
+				    image.getHeight()
+				    );
+			} else {
+					thumbnail = Bitmap.createBitmap(
+					image,
+				    0, 
+				    image.getHeight()/2 - image.getWidth()/2,
+				    image.getWidth(),
+				    image.getWidth() 
+				    );
+			}
+			
+			imageView.setImageBitmap(Bitmap.createScaledBitmap(thumbnail, imageWidth, imageHeight, true));
+			imageView.setOnClickListener(new OnImageClickListener(_filePaths.get(position)));
 		
-		imageView.setImageBitmap(Bitmap.createScaledBitmap(thumbnail, imageWidth, imageHeight, true));
-
-		imageView.setOnClickListener(new OnImageClickListener(_filePaths.get(position)));
-
+		} else {
+			db.deletePhotoByPath(_filePaths.get(position));
+		}
 		return imageView;
 	}
 

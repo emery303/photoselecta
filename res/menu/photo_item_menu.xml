@@ -4,28 +4,35 @@
        android:id="@+id/photo_item_menu_category"
        android:orderInCategory="100"
        android:showAsAction="never"
-       android:title="Set photo category"
+       android:title="Assign new category"
        />
+    
+    <item
+       android:id="@+id/photo_item_menu_tags"
+       android:orderInCategory="100"
+       android:showAsAction="never"
+       android:title="Edit tags"
+       />
+    
+    <item
+        android:id="@+id/photo_item_menu_facebook"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="Post to Facebook"
+        />
+    
+    <item
+        android:id="@+id/photo_item_menu_bluetooth"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="Send via Bluetooth"
+        />
     
     <item
         android:id="@+id/photo_item_menu_delete"
         android:orderInCategory="100"
         android:showAsAction="never"
-        android:title="Delete this photo"
-        />
-    
-    <item
-        android:id="@+id/photo_item_menu_share"
-        android:orderInCategory="100"
-        android:showAsAction="never"
-        android:title="Share this photo"
-        />
-    
-    <item
-        android:id="@+id/photo_item_menu_back"
-        android:orderInCategory="100"
-        android:showAsAction="never"
-        android:title="Back"
+        android:title="Delete"
         />
 
 </menu>

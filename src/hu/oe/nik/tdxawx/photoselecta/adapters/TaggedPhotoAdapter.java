@@ -13,6 +13,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.text.InputFilter.LengthFilter;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -25,15 +26,18 @@ import android.widget.ImageView;
 public class TaggedPhotoAdapter extends BaseAdapter {
 
 	private Activity _activity;
-	private ArrayList<String> _filePaths = new ArrayList<String>();
+	private ArrayList<String> _filePaths;
 	private int imageWidth;
 	private int imageHeight;
 
-	public TaggedPhotoAdapter(Activity activity, int imageWidth, int imageHeight, CharSequence catname) {
+	public TaggedPhotoAdapter(Activity activity, int imageWidth, int imageHeight, String[] paths) {
 		DatabaseManager db = new DatabaseManager(activity.getApplicationContext());
 
 		this._activity = activity;
-		this._filePaths = db.getPhotosByCategory(catname);
+		this._filePaths = new ArrayList<String>();
+		for (int i = 0; i < paths.length; i++) {
+			_filePaths.add(paths[i]);
+		}
 		this.imageWidth = imageWidth;
 		this.imageHeight = imageHeight;
 	}

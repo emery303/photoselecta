@@ -5,6 +5,7 @@ import hu.oe.nik.tdxawx.photoselecta.utility.DatabaseManager;
 import hu.oe.nik.tdxawx.photoselecta.utility.DraggableGridView;
 import hu.oe.nik.tdxawx.photoselecta.utility.ImageAnalyzer;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -57,7 +58,7 @@ public class AnalyzerActivity extends Activity {
         	this.showSwipeInfo = true;
         }
         
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         
         pb = (ProgressBar)findViewById(R.id.analyzerprogress);
         pbtext = (TextView)findViewById(R.id.analyzertext);
@@ -66,7 +67,7 @@ public class AnalyzerActivity extends Activity {
         	public void run() {
         	
         		DatabaseManager db = new DatabaseManager(AnalyzerActivity.this);
-                ArrayList<String> files = db.getLatestSession();
+                final ArrayList<String> files = db.getLatestSession();
                 final ArrayList<Photo> photos = new ArrayList<Photo>();
                 
                 Bitmap b;
@@ -84,10 +85,12 @@ public class AnalyzerActivity extends Activity {
                 	photos.add(photo);
                 	
                 	int best_one = 0;
-	           		for (int j = 0; j < photos.size(); j++) {
-	           			if (compareSharpness(photos.get(best_one), photos.get(j)) == photos.get(j))
-	           			best_one = j;
-	           		}
+                	if (files.size() > 0) {
+		           		for (int j = 0; j < photos.size(); j++) {
+		           			if (compareSharpness(photos.get(best_one), photos.get(j)) == photos.get(j))
+		           			best_one = j;
+		           		}
+                	}
 	           		
 	           		final int best = best_one;
 	           		final int progress = Math.round( ( (float)i / (float)files.size() ) * 200);
@@ -96,20 +99,13 @@ public class AnalyzerActivity extends Activity {
         				public void run(){
         					pb.setProgress(progress);
         					
-        					if (progress >= 100) {
+        					if (progress >= 100 || files.size() == 1) {
         						photos.get(best).bestInSession = true;
         						GridView g = (GridView)findViewById(R.id.analyzergrid);
-        						//AnalyzerAdapter adapter = new AnalyzerAdapter(AnalyzerActivity.this, photos);
-        						//for (int i = 0; i < adapter.getCount(); i++) {
-        						//	g.addView(adapter.getView(i, null, g));
-        							//g.addPath(String.valueOf(adapter.getItem(i)));
-        						//}
         		                g.setAdapter(new AnalyzerAdapter(AnalyzerActivity.this, photos));
         		                registerForContextMenu(g);
-        		                //Toast.makeText(AnalyzerActivity.this, "Click the photos you want to delete!", Toast.LENGTH_LONG).show();
         		                pb.setVisibility(8);
         		                pbtext.setVisibility(8);
-        		                
         		                
         		                if (showSwipeInfo) {
 	        		                final AlertDialog info = new AlertDialog.Builder(AnalyzerActivity.this).create();
@@ -150,71 +146,24 @@ public class AnalyzerActivity extends Activity {
     		final int photo_id = info.targetView.getId();
     		
     		//--- tag list ---
-            final ArrayList selectedItems=new ArrayList();
-            
-            DatabaseManager db = new DatabaseManager(getApplicationContext());
+            final DatabaseManager db = new DatabaseManager(getApplicationContext());
             final CharSequence[] alltags = db.getTags();
-            final CharSequence[] currentTags = db.getTagsByPhoto(photo_id);
-            
-            final boolean[] checked = new boolean[alltags.length];
-            
-            for (int n = 0; n < alltags.length; n++) {
-            	checked[n] = false;
-            	if (currentTags != null) {
-	            	for (int m = 0; m < currentTags.length; m++) {
-	                	if (currentTags[m] == alltags[n]) {
-	                		checked[n] = true;
-	                		break;
-	                	}
-	                }	
-            	}
-            }
+            final CharSequence[] currentTags = db.getTagsByPhotoId(photo_id);
 
-            //final CharSequence[] items = {"one", "two", "three"};
-            AlertDialog.Builder builder = new AlertDialog.Builder(AnalyzerActivity.this);
-            builder.setTitle("Select the tags to assign");
-            /*builder.setMultiChoiceItems(items, checked,
-                    new DialogInterface.OnMultiChoiceClickListener() {
-             @Override
-             public void onClick(DialogInterface dialog, int indexSelected,
-                     boolean isChecked) {
-                 if (isChecked) {
-                     selectedItems.add(indexSelected);
-                 } else if (selectedItems.contains(indexSelected)) {
-                     selectedItems.remove(Integer.valueOf(indexSelected));
-                 }
-             }
-             })*/
-            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                 @Override
-                 public void onClick(DialogInterface dialog, int id) {
-                	 String tags = "";
-                	 DatabaseManager db = new DatabaseManager(getApplicationContext());
-                	 for (int i = 0; i < selectedItems.size(); i++) {
-                		 CharSequence tagname = alltags[Integer.valueOf(selectedItems.get(i).toString())];
-                		 db.assignTagToPhoto(photo_id, db.getTagIdByName(tagname.toString()));
-                		 tags += " "+tagname;
-                	 }
-                	Toast.makeText(getApplicationContext(), "Tags assigned: "+tags+"", Toast.LENGTH_SHORT).show();
-                	db.CloseDB();
-                 }
-             }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                 @Override
-                 public void onClick(DialogInterface dialog, int id) {
-                	 
-                 }
-             });
-
-            //AlertDialog dialog = builder.create();
             final Dialog dialog = new Dialog(AnalyzerActivity.this);
             dialog.setTitle("Assign tag to photo");
             dialog.setContentView(R.layout.assign_tag);
             Typeface HelveticaNeueCB = Typeface.createFromAsset(getAssets(), "HelveticaNeue-CondensedBold.ttf");
             ((TextView)(dialog.findViewById(R.id.addnewtag_text))).setTypeface(HelveticaNeueCB);
+            String tags_of_photo = "";
+            for (int i = 0; i < currentTags.length; i++) {
+            	tags_of_photo += currentTags[i]+", ";
+            }
             ArrayAdapter<CharSequence> tagsadapter = new ArrayAdapter<CharSequence>(AnalyzerActivity.this, android.R.layout.simple_dropdown_item_1line, alltags);
             final MultiAutoCompleteTextView tags = (MultiAutoCompleteTextView)dialog.findViewById(R.id.selectedtags);
             tags.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
             tags.setAdapter(tagsadapter);
+            tags.setText(tags_of_photo);
             tags.setTypeface(HelveticaNeueCB);
             Button btn_cancel = (Button)dialog.findViewById(R.id.tag_cancel);
             Button btn_assign = (Button)dialog.findViewById(R.id.tag_ok);
@@ -225,8 +174,23 @@ public class AnalyzerActivity extends Activity {
 			});
             btn_assign.setOnClickListener(new OnClickListener() {
 				public void onClick(View arg0) {
-					String t = tags.getText().toString();
-					Toast.makeText(AnalyzerActivity.this, t, Toast.LENGTH_LONG).show();
+					String t = tags.getText().toString().trim();
+					if (t.equals("")) {
+						Toast.makeText(AnalyzerActivity.this, "Please give a tag to assign!", Toast.LENGTH_LONG).show();
+					} else {
+						String[] selectedTags = t.split(",");
+						int assigned = 0;
+						for (int i = 0; i < selectedTags.length; i++) {
+							String tag = selectedTags[i].trim();
+							if (!tag.equals("")) {
+								int tag_id = db.insertNewTag(tag);
+								db.assignTagToPhoto(photo_id, tag_id);
+								assigned++;
+							}
+						}
+						Toast.makeText(AnalyzerActivity.this, "Successfully assigned "+assigned+" tags.", Toast.LENGTH_LONG).show();
+						dialog.dismiss();
+					}
 				}
 			});
             dialog.show();

@@ -1,13 +1,12 @@
 package hu.oe.nik.tdxawx.photoselecta;
 
 import hu.oe.nik.tdxawx.photoselecta.utility.DatabaseManager;
+import hu.oe.nik.tdxawx.photoselecta.utility.FacebookManager;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.io.InputStream;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -17,19 +16,28 @@ import org.opencv.android.BaseLoaderCallback;
 import org.opencv.android.LoaderCallbackInterface;
 import org.opencv.android.OpenCVLoader;
 
+import com.facebook.Request;
+import com.facebook.Response;
+import com.facebook.Session;
+import com.facebook.Session.StatusCallback;
+import com.facebook.SessionState;
+import com.facebook.android.DialogError;
+import com.facebook.android.Facebook;
+import com.facebook.android.FacebookError;
+import com.facebook.widget.FacebookDialog;
+
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.ActivityInfo;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.view.ViewPager;
-import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -37,13 +45,9 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.view.animation.RotateAnimation;
-import android.widget.Button;
-import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class MainActivity extends FragmentActivity {
 	
@@ -51,7 +55,9 @@ public class MainActivity extends FragmentActivity {
 	
 	public static List<String> _photos = new ArrayList<String>();
 	public static final String PHOTOS_ORDER = "desc";
+	private static final String[] FACEBOOK_AUTH_SCOPE = new String[]{ "publish_actions,publish_stream,offline_access"};
 	private DatabaseManager db;
+	private FacebookManager fbm;
 	
 	public SharedPreferences _preferences;
 	
@@ -80,8 +86,9 @@ public class MainActivity extends FragmentActivity {
 		
 		OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_2_4_5, this, ocvLoadCallback);
 		
-		super.onCreate(savedInstanceState);
+		this.fbm = new FacebookManager(MainActivity.this, getString(R.string.app_facebook_id)); 
 		
+		super.onCreate(savedInstanceState);
 		setContentView(R.layout.splash);
         
         splashpic = (ImageView)findViewById(R.id.splashpic);
@@ -100,7 +107,14 @@ public class MainActivity extends FragmentActivity {
 	}
 	
 	@Override
+	protected void onResume() {
+		super.onResume();
+	}
+	
+	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		fbm.onActivityResult(requestCode, resultCode, data);
 		
 		if (data != null) {
 			Bundle ex = data.getExtras();
@@ -123,7 +137,6 @@ public class MainActivity extends FragmentActivity {
 					}
 			}
 		}
-		super.onActivityResult(requestCode, resultCode, data);
 	}
 	
 	@Override
@@ -356,13 +369,24 @@ public class MainActivity extends FragmentActivity {
 			@Override
 			public void onClick(View v) {
 				v.startAnimation( (Animation)AnimationUtils.loadAnimation(v.getContext(), R.anim.bounce) );
-				v.postDelayed(new Runnable() {
-				    @Override
-				    public void run() {
-				    	Intent sendphotos = new Intent(MainActivity.this, ImportFolderActivity.class);
-						startActivityForResult(sendphotos, 1005);
+				new AlertDialog.Builder(MainActivity.this) 
+				.setTitle("Choose session mode")
+				.setItems(new CharSequence[] {"Post to Facebook", "Send via Bluetooth", "Send via Email"}, new DialogInterface.OnClickListener() {
+				    @SuppressWarnings("deprecation")
+					@Override
+				    public void onClick(DialogInterface dialog, int which) {
+				        switch (which) {
+				        case 0:
+				        	String path = Environment.getExternalStorageDirectory().getAbsolutePath().concat("/Download/necronomicon.jpg");
+				        	fbm.PostPhotoToFacebook(path, "Lássuk, megy-e!");
+				        	break;
+				        case 1:
+				        	break;
+			        	default:
+			        		break;
+				        }
 				    }
-				}, 250);
+				}).show();
 			}
 		});
 		
