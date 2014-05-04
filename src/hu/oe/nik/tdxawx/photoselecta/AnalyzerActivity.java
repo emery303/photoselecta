@@ -4,6 +4,7 @@ import hu.oe.nik.tdxawx.photoselecta.adapters.AnalyzerAdapter;
 import hu.oe.nik.tdxawx.photoselecta.utility.DatabaseManager;
 import hu.oe.nik.tdxawx.photoselecta.utility.DraggableGridView;
 import hu.oe.nik.tdxawx.photoselecta.utility.ImageAnalyzer;
+import hu.oe.nik.tdxawx.photoselecta.utility.PhotoMenu;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -12,18 +13,22 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.animation.AnimationUtils;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -40,33 +45,32 @@ public class AnalyzerActivity extends Activity {
 	TextView pbtext;
 	final ImageAnalyzer ia = new ImageAnalyzer();
 	
-	private boolean showSwipeInfo = false;
+	private boolean swipeDeleteEnabled = false;
+	private boolean onlyKeepBest = false;
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.analyzer);
-        
-        TextView txt = (TextView) findViewById(R.id.analyzertext);
-        Typeface HelveticaNeueCB = Typeface.createFromAsset(getAssets(), "HelveticaNeue-CondensedBold.ttf");
-        txt.setTypeface(HelveticaNeueCB);
-        
         setTitle("Review photos");
-        
-        Intent i = getIntent();
-        if (i.getStringExtra("SESSION_MODE").equals("SHARPNESS")) {
-        	this.showSwipeInfo = true;
-        }
-        
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        if (sp.getBoolean("swipedelete", false) == true)
+        	this.swipeDeleteEnabled = true;
+        if (sp.getBoolean("onlykeepbest", false) == true)
+        	this.onlyKeepBest = true;
         
         pb = (ProgressBar)findViewById(R.id.analyzerprogress);
         pbtext = (TextView)findViewById(R.id.analyzertext);
+        Typeface HelveticaNeueCB = Typeface.createFromAsset(getAssets(), "HelveticaNeue-CondensedBold.ttf");
+        pbtext.setTypeface(HelveticaNeueCB);
+        //Intent i = getIntent();
 
         new Thread(new Runnable(){
         	public void run() {
         	
-        		DatabaseManager db = new DatabaseManager(AnalyzerActivity.this);
+        		final DatabaseManager db = new DatabaseManager(AnalyzerActivity.this);
                 final ArrayList<String> files = db.getLatestSession();
                 final ArrayList<Photo> photos = new ArrayList<Photo>();
                 
@@ -101,13 +105,30 @@ public class AnalyzerActivity extends Activity {
         					
         					if (progress >= 100 || files.size() == 1) {
         						photos.get(best).bestInSession = true;
+        						
+        						if (onlyKeepBest && files.size() > 1) {
+        							for (int i = 0; i < photos.size(); i++) {
+        								if (i != best) {
+	        								Photo p = photos.get(i);
+	        								db.deletePhotoByPath(p.getPath());
+        								}
+        							}
+        							Photo bp = photos.get(best);
+        							photos.clear();
+        							photos.add(bp);
+        						}
+        						
         						GridView g = (GridView)findViewById(R.id.analyzergrid);
-        		                g.setAdapter(new AnalyzerAdapter(AnalyzerActivity.this, photos));
+        						AnalyzerAdapter adapter = new AnalyzerAdapter(AnalyzerActivity.this, photos);
+        						if (!swipeDeleteEnabled) {
+        							adapter.disableSwipeDelete();
+        						}
+        		                g.setAdapter(adapter);
         		                registerForContextMenu(g);
         		                pb.setVisibility(8);
         		                pbtext.setVisibility(8);
         		                
-        		                if (showSwipeInfo) {
+        		                if (swipeDeleteEnabled) {
 	        		                final AlertDialog info = new AlertDialog.Builder(AnalyzerActivity.this).create();
 	        		            	info.setTitle("Review photos");
 	        		            	info.setIcon(android.R.drawable.ic_dialog_info);
@@ -132,7 +153,7 @@ public class AnalyzerActivity extends Activity {
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
       if (v.getId()==R.id.analyzergrid) {
         menu.setHeaderTitle("Photo actions");
-        String[] menuItems = {"Assign tag", "Discard"};
+        String[] menuItems = {"View", "Assign tag", "Discard"};
         for (int i = 0; i<menuItems.length; i++) {
           menu.add(Menu.NONE, i, i, menuItems[i]);
         }
@@ -143,6 +164,14 @@ public class AnalyzerActivity extends Activity {
     public boolean onContextItemSelected(MenuItem item) {
     	AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
     	if (item.getItemId() == 0) {
+    		DatabaseManager db = new DatabaseManager(getApplicationContext());
+    		final int photo_id = info.targetView.getId();
+    		String _path = db.getPhotoPathById(photo_id);
+    		Intent viewphoto = new Intent(AnalyzerActivity.this, FullscreenPhotoActivity.class);
+    		viewphoto.putExtra("path", _path);
+    		startActivityForResult(viewphoto, 1);
+    	}
+    	if (item.getItemId() == 1) {
     		final int photo_id = info.targetView.getId();
     		
     		//--- tag list ---
@@ -151,7 +180,7 @@ public class AnalyzerActivity extends Activity {
             final CharSequence[] currentTags = db.getTagsByPhotoId(photo_id);
 
             final Dialog dialog = new Dialog(AnalyzerActivity.this);
-            dialog.setTitle("Assign tag to photo");
+            dialog.setTitle("Assign tags to photo");
             dialog.setContentView(R.layout.assign_tag);
             Typeface HelveticaNeueCB = Typeface.createFromAsset(getAssets(), "HelveticaNeue-CondensedBold.ttf");
             ((TextView)(dialog.findViewById(R.id.addnewtag_text))).setTypeface(HelveticaNeueCB);
@@ -197,11 +226,13 @@ public class AnalyzerActivity extends Activity {
     		//--- tag list end ---
 
     	}
-    	if (item.getItemId() == 1) {
+    	if (item.getItemId() == 2) {
     		DatabaseManager db = new DatabaseManager(getApplicationContext());
     		db.deletePhotoById(info.targetView.getId());
-    		info.targetView.setVisibility(8);
+    		info.targetView.startAnimation( AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fadeout));
+    		info.targetView.setVisibility(View.INVISIBLE);
     		db.CloseDB();
+    		Toast.makeText(AnalyzerActivity.this, "Photo discarded.", Toast.LENGTH_SHORT).show();
     	}
     	return super.onContextItemSelected(item);
     }
@@ -255,7 +286,7 @@ public class AnalyzerActivity extends Activity {
 	    else
 	    	min = blur_b;
 	    
-	    if ((blur_a / min) < (blur_b / min))
+	    if ((blur_a / min) > (blur_b / min))
 	    	return a; 
     	else
     		return b;

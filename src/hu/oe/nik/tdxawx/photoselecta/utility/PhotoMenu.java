@@ -105,7 +105,7 @@ public class PhotoMenu extends Activity {
 		            final CharSequence[] currentTags = db.getTagsByPhotoId(_id);
 
 		            final Dialog tagdialog = new Dialog(_activity);
-		            tagdialog.setTitle("Assign tag to photo");
+		            tagdialog.setTitle("Assign tags to photo");
 		            tagdialog.setContentView(R.layout.assign_tag);
 		            ((TextView)(tagdialog.findViewById(R.id.addnewtag_text))).setTypeface(HelveticaNeueCB);
 		            String tags_of_photo = "";

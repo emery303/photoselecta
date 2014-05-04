@@ -239,7 +239,6 @@ public class MainActivity extends FragmentActivity {
 		ImageButton btn_viewphotosbytag = (ImageButton)findViewById(R.id.start_tags);
 		ImageButton btn_gallery = (ImageButton)findViewById(R.id.start_viewphotos);
 		ImageButton btn_importfolder = (ImageButton)findViewById(R.id.start_importfolder);
-		ImageButton btn_sendphotos = (ImageButton)findViewById(R.id.start_sendphotos);
 		ImageButton btn_settings = (ImageButton)findViewById(R.id.start_settings);
 		
 		btn_exit.setOnClickListener(new OnClickListener() {
@@ -273,7 +272,7 @@ public class MainActivity extends FragmentActivity {
 				final Intent cvcam = new Intent(MainActivity.this, CvCameraActivity.class);
 				new AlertDialog.Builder(MainActivity.this) 
 				.setTitle("Choose session mode")
-				.setItems(new CharSequence[] {"Sharpness mode", "Category mode"}, new DialogInterface.OnClickListener() {
+				.setItems(new CharSequence[] {"Quality mode", "Category mode"}, new DialogInterface.OnClickListener() {
 				    @Override
 				    public void onClick(DialogInterface dialog, int which) {
 				        switch (which) {
@@ -346,13 +345,6 @@ public class MainActivity extends FragmentActivity {
 						startActivityForResult(importfolder, 1004);
 				    }
 				}, 250);
-			}
-		});
-		
-		btn_sendphotos.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-
 			}
 		});
 		

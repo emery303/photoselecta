@@ -1,35 +1,29 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <PreferenceCategory 
-        android:title="Photo sessions">
+        android:title="Quality mode">
         <CheckBoxPreference 
            android:title="Only keep best photos"
            android:key="onlykeepbest"
-           android:defaultValue="0"
-           android:summary="Only keeps the best photos in a session, the rest is discarded automatically"
-           />
-        <CheckBoxPreference 
-           android:title="Auto quality check"
-           android:key="autoqualitycheck"
-           android:defaultValue="0"
-           android:summary="Automatically check which photos are the best - when this is enabled, you don't see a popup when you start a new photo session"
+           android:defaultValue="false"
+           android:summary="When in quality mode, only keeps the best photos in a session, the rest is discarded automatically"
            />
     </PreferenceCategory>
     <PreferenceCategory 
-        android:title="Review photos screen">
+        android:title="Categories view">
         <CheckBoxPreference 
-           android:title="One click deletion"
-           android:key="oneclickdelete"
-           android:defaultValue="0"
-           android:summary="Delete unneeded photos with one click on the review screen instead of swiping"
+           android:title="Show uncategorized"
+           android:key="showuncategorized"
+           android:defaultValue="false"
+           android:summary="Show photos without a category at the end of the category list view"
            />
     </PreferenceCategory>
     <PreferenceCategory 
-        android:title="Photo list">
+        android:title="Photos">
         <CheckBoxPreference 
-           android:title="Fast delete"
-           android:key="fastdelete"
-           android:defaultValue="0"
-           android:summary="Delete a photo instantly when dropped to trashcan"
+           android:title="Swipe deletion"
+           android:key="swipedelete"
+           android:defaultValue="false"
+           android:summary="Delete unneeded photos with a single swipe"
            />
     </PreferenceCategory>
 </PreferenceScreen>

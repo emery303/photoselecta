@@ -47,6 +47,8 @@ public class ViewPhotosByCategoryActivity extends Activity {
 	private ProgressBar progress;
 	private TextView progresstext;
 	Typeface HelveticaNeueCB;
+	
+	private boolean showUncategorized;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +60,11 @@ public class ViewPhotosByCategoryActivity extends Activity {
 		progress = (ProgressBar)findViewById(R.id.catphotos_loading);
 		progresstext = (TextView)findViewById(R.id.catphotos_loadingtext);
 		progresstext.setTypeface(HelveticaNeueCB);
+		
+		SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        if (sp.getBoolean("showuncategorized", false) == true)
+        	this.showUncategorized = true;
+		
 		buildPhotoList();
 	}
 	
@@ -78,6 +85,9 @@ public class ViewPhotosByCategoryActivity extends Activity {
         		layout.setOrientation(LinearLayout.VERTICAL);
         		CharSequence[] categories = db.getCategories();
         		for (int i = 0; i < categories.length; i++) {
+        			if (!showUncategorized && categories[i].equals("Uncategorized"))
+        				continue;
+        			
         			CategorizedPhotoAdapter adapter = new CategorizedPhotoAdapter(ViewPhotosByCategoryActivity.this, 320, 320, categories[i]);
         			if (adapter.getCount() > 0) {
         				TextView tv = new TextView(getApplicationContext());

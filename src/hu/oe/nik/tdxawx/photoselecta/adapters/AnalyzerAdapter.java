@@ -23,28 +23,36 @@ import android.graphics.Path.FillType;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.animation.AnimationUtils;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 public class AnalyzerAdapter extends BaseAdapter {  
 	 private Context context;  
 	 private ArrayList<Photo> photos;
 	 
-	 private static final int THUMBNAIL_WIDTH = 640;
-	 private static final int THUMBNAIL_HEIGHT = 480;
+	 private static final int THUMBNAIL_WIDTH = 720;
+	 private static final int THUMBNAIL_HEIGHT = 540;
 	 
 	 private GestureDetector gd;
 	 private DatabaseManager db;
+	 
+	 private boolean swipeDeleteEnabled = true;
 	  
 	 public AnalyzerAdapter (Context c, ArrayList<Photo> photos) {  
 		 this.context = c;  
 		 this.photos = photos;
 		 this.gd = new GestureDetector(new SwipeListener(c));
+	 }
+	 
+	 public void disableSwipeDelete() {
+		 swipeDeleteEnabled = false;
 	 }
 	 
 	 public int getCount() {  
@@ -95,35 +103,45 @@ public class AnalyzerAdapter extends BaseAdapter {
 		 iv.setId(photo_dbid);
 		 final int itempos = position; 
 		 
-		 iv.setOnTouchListener(new View.OnTouchListener() {			 
+		 iv.setOnClickListener(new OnClickListener() {
 			@Override
-			public boolean onTouch(final View v, final MotionEvent event) {
-				if (gd.onTouchEvent(event)) {
-					if (photos.size() > 0) {
-						v.startAnimation( AnimationUtils.loadAnimation(context, R.anim.fadeout) );
-						v.postDelayed(new Runnable() {
-							
-							@Override
-							public void run() {
-								String path = photos.get(itempos).getPath();
-								photos.remove(itempos);
-								db = new DatabaseManager(context);
-								db.deletePhotoByPath(path);
-								db.CloseDB();
-								File photo_file = new File(path);
-								photo_file.delete();
-								AnalyzerAdapter.this.notifyDataSetChanged();
-							}
-						}, 250);
-					}
-				} else {
-					if (event.getAction() == MotionEvent.ACTION_UP) {
-						v.performLongClick();
-					}
-				}
-				return true;
+			public void onClick(View v) {
+				v.performLongClick();
 			}
-		  });
+		 });
+		 
+		 if (swipeDeleteEnabled) {
+			 iv.setOnTouchListener(new View.OnTouchListener() {			 
+				@Override
+				public boolean onTouch(final View v, final MotionEvent event) {
+					if (gd.onTouchEvent(event)) {
+						if (photos.size() > 0) {
+							v.startAnimation( AnimationUtils.loadAnimation(context, R.anim.fadeout) );
+							v.postDelayed(new Runnable() {
+								
+								@Override
+								public void run() {
+									String path = photos.get(itempos).getPath();
+									photos.remove(itempos);
+									db = new DatabaseManager(context);
+									db.deletePhotoByPath(path);
+									db.CloseDB();
+									File photo_file = new File(path);
+									photo_file.delete();
+									AnalyzerAdapter.this.notifyDataSetChanged();
+									Toast.makeText(context, "Photo discarded.", Toast.LENGTH_SHORT).show();
+								}
+							}, 250);
+						}
+					} else {
+						if (event.getAction() == MotionEvent.ACTION_UP) {
+							v.performClick();
+						}
+					}
+					return true;
+				}
+			  });
+		 }
 		  
 		 return iv;  
 	 }  

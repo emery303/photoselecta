@@ -49,6 +49,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -134,6 +135,7 @@ public class CvCameraActivity extends Activity implements /*OnTouchListener,*/ C
 		
 		categorytext = (TextView)findViewById(R.id.categorytext);
         categorytext.setTypeface(HelveticaNeueCB);
+        categorytext.setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -220,13 +222,11 @@ public class CvCameraActivity extends Activity implements /*OnTouchListener,*/ C
     public Mat onCameraFrame(CvCameraViewFrame inputFrame) {
     	mRgba = inputFrame.rgba();
     	mGray = inputFrame.gray();
-    	if (proc != null) {
+    	/*if (proc != null) {
 	    	CharSequence cat = proc.determineCategory(mRgba, mGray);
 	    	this.selectedCategory = cat.toString();
 	        updateCategoryText(cat, "");
-    	}
-    	//mRgba = determineCategory(mRgba, mGray);
-    	//mRgba = determineShape(mRgba, mGray);
+    	}*/
         return mRgba;
     }
 
@@ -267,6 +267,21 @@ public class CvCameraActivity extends Activity implements /*OnTouchListener,*/ C
     	  Mat imageMatrix = new Mat();
 
     	  Imgproc.cvtColor(mRgba, imageMatrix, Imgproc.COLOR_RGBA2BGR, 3);
+    	  
+    	  	if (proc != null) {
+	  	    	CharSequence cat = proc.determineCategory(mRgba, mGray);
+	  	    	this.selectedCategory = cat.toString();
+	  	        //updateCategoryText(cat, "");
+	  	    	runOnUiThread(new Runnable() {
+	  	    	     @Override
+	  	    	     public void run() {
+	  	    	    	 categorytext.setText(selectedCategory);
+	  	    	    	 categorytext.setVisibility(View.VISIBLE);
+	  	    	    	 categorytext.startAnimation( AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fadeout) );
+	  	    	    	 categorytext.setVisibility(View.INVISIBLE);
+	  	    	    }
+	  	    	});
+	      	}
 
 			try {
 				date = new Date();

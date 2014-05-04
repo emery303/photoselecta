@@ -30,6 +30,10 @@
         android:layout_height="fill_parent"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp"
+        android:horizontalSpacing="16dp"
+        android:verticalSpacing="16dp"
         android:numColumns="2"
         android:gravity="center" />
  

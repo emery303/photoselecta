@@ -57,7 +57,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.cameraview);
 		
-		setTitle("Take photos - sharpness mode");
+		setTitle("Take photos - quality mode");
 		SESSION_ID = Calendar.getInstance().getTimeInMillis();
 		_shuttersound = MediaPlayer.create(CameraActivity.this, R.raw.shutter);
 		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);

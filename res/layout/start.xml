@@ -60,14 +60,6 @@
         android:layout_marginBottom="25dp"
         android:layout_gravity="center_horizontal"
         android:background="@drawable/start_importfolder" />    
-        
-	<ImageButton
-        android:id="@+id/start_sendphotos"
-        android:layout_width="256dp"
-        android:layout_height="256dp"
-        android:layout_marginBottom="25dp"
-        android:layout_gravity="center_horizontal"
-        android:background="@drawable/start_sendphotos" />
 
     <ImageButton
         android:id="@+id/start_settings"
