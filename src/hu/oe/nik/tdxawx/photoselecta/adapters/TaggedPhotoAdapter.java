@@ -4,6 +4,7 @@ import hu.oe.nik.tdxawx.photoselecta.FullscreenPhotoActivity;
 import hu.oe.nik.tdxawx.photoselecta.R;
 import hu.oe.nik.tdxawx.photoselecta.ViewPhotosByCategoryActivity;
 import hu.oe.nik.tdxawx.photoselecta.utility.DatabaseManager;
+import hu.oe.nik.tdxawx.photoselecta.utility.PhotoMenu;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -17,6 +18,7 @@ import android.text.InputFilter.LengthFilter;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.view.animation.AnimationUtils;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -93,6 +95,7 @@ public class TaggedPhotoAdapter extends BaseAdapter {
 		imageView.setImageBitmap(thumbnail);
 
 		imageView.setOnClickListener(new OnImageClickListener(_filePaths.get(position)));
+		imageView.setOnLongClickListener(new OnImageLongClickListener(_filePaths.get(position)));
 
 		return imageView;
 	}
@@ -113,6 +116,24 @@ public class TaggedPhotoAdapter extends BaseAdapter {
 					_activity.startActivity(i);
 			    }
 			}, 250);
+		}
+	}
+	
+	class OnImageLongClickListener implements OnLongClickListener {
+		String _path;
+		public OnImageLongClickListener(String path) {
+			this._path = path;
+		}
+		@Override
+		public boolean onLongClick(View v) {
+			v.startAnimation( AnimationUtils.loadAnimation(_activity, R.anim.bounce) );
+			v.postDelayed(new Runnable() {
+				@Override
+				public void run() {
+					new PhotoMenu(_activity, _path).openPhotoMenu();
+				}
+			}, 200);			
+			return true;
 		}
 	}
 

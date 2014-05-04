@@ -1,52 +1,24 @@
 package hu.oe.nik.tdxawx.photoselecta;
 
-import hu.oe.nik.tdxawx.photoselecta.adapters.CategorizedPhotoAdapter;
 import hu.oe.nik.tdxawx.photoselecta.adapters.TaggedPhotoAdapter;
-import hu.oe.nik.tdxawx.photoselecta.adapters.ViewPhotosAdapter;
-import hu.oe.nik.tdxawx.photoselecta.utility.Constants;
 import hu.oe.nik.tdxawx.photoselecta.utility.DatabaseManager;
-import hu.oe.nik.tdxawx.photoselecta.utility.Utility;
-
-import java.util.ArrayList;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
-import android.content.res.Resources;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.util.Log;
-import android.util.TypedValue;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnHoverListener;
-import android.view.View.OnTouchListener;
-import android.view.ViewGroup.LayoutParams;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.GridView;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.MultiAutoCompleteTextView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class ViewPhotosByTagActivity extends Activity {
-
-	private Utility utils;
-	private ArrayList<String> imagePaths = new ArrayList<String>();
-	private ImageView deletebutton;
-	private int columnWidth;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -117,6 +89,8 @@ public class ViewPhotosByTagActivity extends Activity {
 	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		
+		
 		if (data != null) {
 			Bundle ex = data.getExtras();
 			if (ex != null) {

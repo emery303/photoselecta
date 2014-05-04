@@ -1,7 +1,9 @@
 package hu.oe.nik.tdxawx.photoselecta;
 
+import hu.oe.nik.tdxawx.photoselecta.adapters.GalleryAdapter;
 import hu.oe.nik.tdxawx.photoselecta.adapters.ViewPhotosAdapter;
 import hu.oe.nik.tdxawx.photoselecta.utility.Constants;
+import hu.oe.nik.tdxawx.photoselecta.utility.DatabaseManager;
 import hu.oe.nik.tdxawx.photoselecta.utility.DraggableGridView;
 import hu.oe.nik.tdxawx.photoselecta.utility.Utility;
 
@@ -22,114 +24,33 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnHoverListener;
 import android.view.View.OnTouchListener;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 public class ViewPhotosActivity extends Activity {
 
-	private Utility utils;
 	private ArrayList<String> imagePaths = new ArrayList<String>();
-	private ViewPhotosAdapter adapter;
-	//private GridView gridView;
+	private GalleryAdapter adapter;
+	private GridView gridView;
 	private ImageView deletebutton;
-	private DraggableGridView grid;
-	private int columnWidth;
+	private DatabaseManager db;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.view_photos);
+		setContentView(R.layout.photogallery);
 		
 		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		
+		db = new DatabaseManager(getApplicationContext());
+		
 		deletebutton = (ImageView)findViewById(R.id.btn_deletephoto);
-		grid = (DraggableGridView) findViewById(R.id.view_photos_grid);
-		utils = new Utility(this);
-		InitilizeGridLayout();
-		imagePaths = utils.getFilePaths();
-		adapter = new ViewPhotosAdapter(ViewPhotosActivity.this, imagePaths, columnWidth);
-		for (int i = 0; i < adapter.getCount(); i++) {
-			grid.addView(adapter.getView(i, null, null));
-			grid.addPath(String.valueOf(adapter.getItem(i)));
-		}
-		
-		grid.setOnTouchListener(new OnTouchListener() {
-			@Override
-			public boolean onTouch(View v, MotionEvent event) {
-				if (v == null) {
-					Toast.makeText(getApplicationContext(), "null", Toast.LENGTH_SHORT).show();
-				}
-				//if (v.toString() != "")
-					//deletebutton.setAlpha(0.5f);
-				return false;
-			}
-		});
-		grid.setTouchEndListener(new OnTouchListener() {
-			@Override
-			public boolean onTouch(View v, MotionEvent event) {
-				deletebutton.setAlpha(0.0f);
-				final int x = (int)event.getX();
-				final int y = (int)event.getY();
-				if (event != null && (int)event.getY() < 192) {
-					SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-					boolean fastdelete = sp.getBoolean("fastdelete", false);
-					
-					if (!fastdelete){
-						new AlertDialog.Builder(ViewPhotosActivity.this)
-				        .setIcon(android.R.drawable.ic_dialog_alert)
-				        .setTitle("")
-				        .setMessage("Delete this photo?")
-				        .setPositiveButton("Yes, delete", new DialogInterface.OnClickListener()
-				        {
-				        	@Override
-					        public void onClick(DialogInterface dialog, int which) {
-				        		grid.removeViewAt(grid.getIndexFromCoor(x, y));
-								Toast.makeText(getApplicationContext(), "photo deleted", Toast.LENGTH_SHORT).show();    
-					        }
-				    	})
-					    .setNegativeButton("Cancel", null)
-					    .show();
-					} else {
-						grid.removeViewAt(grid.getIndexFromCoor(x, y));
-						Toast.makeText(getApplicationContext(), "photo deleted", Toast.LENGTH_SHORT).show();
-					}
-				}
-				return false;
-			}
-		});
-		grid.setDeleteHoverListener(new OnTouchListener() {
-			@Override
-			public boolean onTouch(View v, MotionEvent event) {
-				if (v.toString() != "") {
-					if (event != null && (int)event.getY() < 192)
-						deletebutton.setAlpha(0.9f);
-					else
-						deletebutton.setAlpha(0.25f);
-				}
-				return false;
-			}
-		});
-		
-		deletebutton.setOnHoverListener(new OnHoverListener() {
-			
-			@Override
-			public boolean onHover(View v, MotionEvent event) {
-				v.setAlpha(1);
-				return false;
-			}
-		});
-	}
+		gridView = (GridView) findViewById(R.id.photogallery);
+		imagePaths = db.getAllPhotos(true);
+		adapter = new GalleryAdapter(ViewPhotosActivity.this, imagePaths, 320, 320);
+		gridView.setAdapter(adapter);
 
-	private void InitilizeGridLayout() {
-		Resources r = getResources();
-		float padding = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, Constants.GRID_PADDING, r.getDisplayMetrics());
-		columnWidth = (int)((utils.getScreenWidth() - ((Constants.NUM_OF_COLUMNS + 1) * padding)) / Constants.NUM_OF_COLUMNS);
-		//grid.setNumColumns(Constants.NUM_OF_COLUMNS);
-		//grid.setColumnWidth(columnWidth);
-		//grid.setStretchMode(GridView.NO_STRETCH);
-		//grid.setPadding((int)padding, (int)padding, (int)padding, (int)padding);
-		//grid.setHorizontalSpacing((int)padding);
-		//grid.setVerticalSpacing((int)padding);
 	}
 	
 	@Override

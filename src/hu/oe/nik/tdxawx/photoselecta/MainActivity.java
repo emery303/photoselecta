@@ -1,12 +1,8 @@
 package hu.oe.nik.tdxawx.photoselecta;
 
 import hu.oe.nik.tdxawx.photoselecta.utility.DatabaseManager;
-import hu.oe.nik.tdxawx.photoselecta.utility.FacebookManager;
-
 import java.io.File;
 import java.io.FilenameFilter;
-import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -16,23 +12,10 @@ import org.opencv.android.BaseLoaderCallback;
 import org.opencv.android.LoaderCallbackInterface;
 import org.opencv.android.OpenCVLoader;
 
-import com.facebook.Request;
-import com.facebook.Response;
-import com.facebook.Session;
-import com.facebook.Session.StatusCallback;
-import com.facebook.SessionState;
-import com.facebook.android.DialogError;
-import com.facebook.android.Facebook;
-import com.facebook.android.FacebookError;
-import com.facebook.widget.FacebookDialog;
-
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
@@ -57,7 +40,6 @@ public class MainActivity extends FragmentActivity {
 	public static final String PHOTOS_ORDER = "desc";
 	private static final String[] FACEBOOK_AUTH_SCOPE = new String[]{ "publish_actions,publish_stream,offline_access"};
 	private DatabaseManager db;
-	private FacebookManager fbm;
 	
 	public SharedPreferences _preferences;
 	
@@ -84,9 +66,7 @@ public class MainActivity extends FragmentActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		
-		OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_2_4_5, this, ocvLoadCallback);
-		
-		this.fbm = new FacebookManager(MainActivity.this, getString(R.string.app_facebook_id)); 
+		OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_2_4_5, this, ocvLoadCallback); 
 		
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.splash);
@@ -114,7 +94,6 @@ public class MainActivity extends FragmentActivity {
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-		fbm.onActivityResult(requestCode, resultCode, data);
 		
 		if (data != null) {
 			Bundle ex = data.getExtras();
@@ -318,8 +297,13 @@ public class MainActivity extends FragmentActivity {
 			@Override
 			public void onClick(View v) {
 				v.startAnimation( (Animation)AnimationUtils.loadAnimation(v.getContext(), R.anim.bounce) );
-				//Intent i = new Intent(MainActivity.this, ImportFolderActivity.class);
-				//startActivityForResult(i, 1003);
+				v.postDelayed(new Runnable() {
+					@Override
+					public void run() {
+						Intent i = new Intent(MainActivity.this, ViewPhotosActivity.class);
+						startActivityForResult(i, 1003);
+					}
+				}, 250);				
 			}
 		});
 	
@@ -368,25 +352,7 @@ public class MainActivity extends FragmentActivity {
 		btn_sendphotos.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				v.startAnimation( (Animation)AnimationUtils.loadAnimation(v.getContext(), R.anim.bounce) );
-				new AlertDialog.Builder(MainActivity.this) 
-				.setTitle("Choose session mode")
-				.setItems(new CharSequence[] {"Post to Facebook", "Send via Bluetooth", "Send via Email"}, new DialogInterface.OnClickListener() {
-				    @SuppressWarnings("deprecation")
-					@Override
-				    public void onClick(DialogInterface dialog, int which) {
-				        switch (which) {
-				        case 0:
-				        	String path = Environment.getExternalStorageDirectory().getAbsolutePath().concat("/Download/necronomicon.jpg");
-				        	fbm.PostPhotoToFacebook(path, "Lássuk, megy-e!");
-				        	break;
-				        case 1:
-				        	break;
-			        	default:
-			        		break;
-				        }
-				    }
-				}).show();
+
 			}
 		});
 		

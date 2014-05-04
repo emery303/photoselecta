@@ -1,6 +1,7 @@
 package hu.oe.nik.tdxawx.photoselecta.utility;
 
 import hu.oe.nik.tdxawx.photoselecta.MainActivity;
+import hu.oe.nik.tdxawx.photoselecta.R;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -27,9 +28,9 @@ public class FacebookManager {
 	Facebook fb;
 	Activity _activity;
 	
-	public FacebookManager(Activity a, String app_id) {
-		this.fb = new Facebook(app_id);
-		this._activity = a;
+	public FacebookManager(Activity activity) {
+		this.fb = new Facebook(activity.getString(R.string.app_facebook_id));
+		this._activity = activity;
 	}
 	
 	public void PostPhotoToFacebook(String path, String message) {
@@ -92,6 +93,7 @@ public class FacebookManager {
 	                String fbPhotoAddress = "https://www.facebook.com/photo.php?fbid=" +idRploadResponse;
 	                Toast.makeText(_activity.getApplicationContext(), "Photo has been successfully posted to Facebook!", Toast.LENGTH_SHORT).show();
 	                Log.d("PS FB", "EXCEPT posted: "+fbPhotoAddress);
+	                _activity.finish();
 	             } else { 
 	            	Log.d("PS FB", "EXCEPT response ID error");
 	             } 

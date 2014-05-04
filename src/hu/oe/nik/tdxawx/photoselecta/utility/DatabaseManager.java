@@ -62,6 +62,27 @@ public class DatabaseManager extends SQLiteOpenHelper{
     	  }
       }
       
+      public ArrayList<String> getAllPhotos(boolean desc) {
+    	  if (this.database != null) {
+    		  ArrayList<String> result = new ArrayList<String>();
+    		  String dir;
+    		  if (desc)
+    			  dir = "DESC";
+    		  else
+    			  dir = "ASC";
+    		  Cursor cur = database.rawQuery("SELECT path FROM photos ORDER BY id "+dir+"", null);
+    		  if (cur != null && cur.getCount() > 0) {
+    			  cur.moveToFirst();
+    			  do {
+    				  result.add(cur.getString(0));
+    			  } while (cur.moveToNext());
+    		  }
+    		  return result;
+    	  } else {
+    		  return new ArrayList<String>();
+    	  }
+      }
+      
       public ArrayList<String> getPhotosByTag(CharSequence tag) {
     	  if (this.database != null && tag != null && tag != "") {
     		  int tag_id = getTagIdByName(tag.toString());
@@ -293,6 +314,14 @@ public class DatabaseManager extends SQLiteOpenHelper{
     		  return false;
       }
       
+      public boolean removeTagsFromPhoto(int photo_id) {
+    	  if (this.database != null) {
+    		  database.execSQL("DELETE FROM tag2photo WHERE photo_id = '"+String.valueOf(photo_id)+"';");
+    		  return true;
+    	  }
+    	  return false;
+      }
+      
       public boolean assignTagToPhoto(int photo_id, int tag_id) {
     	  if (this.database != null) {
     		  database.execSQL("DELETE FROM tag2photo WHERE tag_id = '"+String.valueOf(tag_id)+"' AND photo_id = '"+String.valueOf(photo_id)+"';");
@@ -308,8 +337,8 @@ public class DatabaseManager extends SQLiteOpenHelper{
       }
       
       public boolean assignCategoryToPhoto(int photo_id, int category_id) {
-    	  if (this.database != null) {
-    		  database.execSQL("DELETE FROM category2photo WHERE category_id = '"+String.valueOf(category_id)+"' AND photo_id = '"+String.valueOf(photo_id)+"';");
+    	  if (this.database != null) { 
+    		  database.execSQL("DELETE FROM category2photo WHERE photo_id = '"+String.valueOf(photo_id)+"';");
     		  try {
     		  database.execSQL("INSERT INTO category2photo (photo_id, category_id) VALUES ("+String.valueOf(photo_id)+", "+String.valueOf(category_id)+");");
     		  } catch (SQLException e) {
@@ -454,12 +483,12 @@ public class DatabaseManager extends SQLiteOpenHelper{
 		  return new int[0];
       }
       
-      public CharSequence[] getCategories() {
-    	  CharSequence[] empty = {"-"};
+      public String[] getCategories() {
+    	  String[] empty = {};
     	  Cursor cur = database.rawQuery("SELECT name FROM categories ORDER BY name ASC", null);
 		  if (cur != null) {
 		       cur.moveToFirst();
-		       CharSequence[] result = new CharSequence[cur.getCount()];
+		       String[] result = new String[cur.getCount()];
 		       int n = 0;
 		       do {
 		    	   result[n] = cur.getString(0);
@@ -469,6 +498,17 @@ public class DatabaseManager extends SQLiteOpenHelper{
 		       return result;
 		  }
 		  return empty;
+      }
+      
+      public CharSequence getCategoryByPhotoId(int photo_id) {
+    	  Cursor cur = database.rawQuery("SELECT name FROM categories WHERE id IN (SELECT category_id FROM category2photo WHERE photo_id = '"+photo_id+"')", null);
+		  if (cur != null && cur.getCount() > 0) {
+		       cur.moveToFirst();
+		       CharSequence result = cur.getString(0);
+		       cur.close();
+		       return result;
+		  }
+		  return "";
       }
       
       public CharSequence[] getTagsByPhotoId(int photo_id) {

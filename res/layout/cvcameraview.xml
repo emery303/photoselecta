@@ -53,7 +53,7 @@
         android:padding="8dp"
         android:background="#333333"
         android:textColor="#ffffff"
-        android:textSize="24sp"
+        android:textSize="20sp"
         android:text="Uncategorized"
         />
 

@@ -35,7 +35,7 @@ public class FullscreenPhotoActivity extends Activity{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.fullscreen_photo);
 		
-		fbm = new FacebookManager(FullscreenPhotoActivity.this, getString(R.string.app_facebook_id));
+		fbm = new FacebookManager(FullscreenPhotoActivity.this);
 		bm = new BluetoothManager(FullscreenPhotoActivity.this);
 		
 		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
