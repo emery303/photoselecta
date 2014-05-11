@@ -1,10 +1,10 @@
 package hu.oe.nik.tdxawx.photoselecta.adapters;
 
-import hu.oe.nik.tdxawx.photoselecta.Photo;
 import hu.oe.nik.tdxawx.photoselecta.R;
 import hu.oe.nik.tdxawx.photoselecta.R.drawable;
+import hu.oe.nik.tdxawx.photoselecta.imaging.Photo;
 import hu.oe.nik.tdxawx.photoselecta.utility.DatabaseManager;
-import hu.oe.nik.tdxawx.photoselecta.SwipeListener;
+import hu.oe.nik.tdxawx.photoselecta.utility.SwipeListener;
 
 import java.io.File;
 import java.util.ArrayList;

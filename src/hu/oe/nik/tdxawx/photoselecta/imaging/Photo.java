@@ -1,4 +1,4 @@
-package hu.oe.nik.tdxawx.photoselecta;
+package hu.oe.nik.tdxawx.photoselecta.imaging;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;

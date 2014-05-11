@@ -69,19 +69,24 @@ public class MainActivity extends FragmentActivity {
 		OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_2_4_5, this, ocvLoadCallback); 
 		
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.splash);
-        
-        splashpic = (ImageView)findViewById(R.id.splashpic);
-        splashloader = (TextView)findViewById(R.id.splashloaderbar);
-        splashloader.setScaleX(0.0f);
 		
-		//setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-		this._preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-		
-		if (!splash_finished) {
-			new SplashScreen().execute();
-		} else {
+		if (savedInstanceState != null) {
 			InitStartScreen();
+		} else {
+			setContentView(R.layout.splash);
+	        
+	        splashpic = (ImageView)findViewById(R.id.splashpic);
+	        splashloader = (TextView)findViewById(R.id.splashloaderbar);
+	        splashloader.setScaleX(0.0f);
+			
+			//setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+			this._preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+			
+			if (!splash_finished) {
+				new SplashScreen().execute();
+			} else {
+				InitStartScreen();
+			}
 		}
 
 	}
@@ -363,5 +368,6 @@ public class MainActivity extends FragmentActivity {
 			}
 		});
 	}
+	
 	
 }

@@ -1,9 +1,10 @@
 package hu.oe.nik.tdxawx.photoselecta;
 
 import hu.oe.nik.tdxawx.photoselecta.adapters.AnalyzerAdapter;
+import hu.oe.nik.tdxawx.photoselecta.imaging.ImageAnalyzer;
+import hu.oe.nik.tdxawx.photoselecta.imaging.Photo;
 import hu.oe.nik.tdxawx.photoselecta.utility.DatabaseManager;
 import hu.oe.nik.tdxawx.photoselecta.utility.DraggableGridView;
-import hu.oe.nik.tdxawx.photoselecta.utility.ImageAnalyzer;
 import hu.oe.nik.tdxawx.photoselecta.utility.PhotoMenu;
 
 import java.lang.reflect.Array;

@@ -1,7 +1,7 @@
 package hu.oe.nik.tdxawx.photoselecta;
 
 import hu.oe.nik.tdxawx.photoselecta.adapters.AnalyzerAdapter;
-import hu.oe.nik.tdxawx.photoselecta.utility.CvImageProcessor;
+import hu.oe.nik.tdxawx.photoselecta.imaging.CvImageProcessor;
 import hu.oe.nik.tdxawx.photoselecta.utility.DatabaseManager;
 import hu.oe.nik.tdxawx.photoselecta.utility.DraggableGridView;
 import hu.oe.nik.tdxawx.photoselecta.utility.FolderPicker;

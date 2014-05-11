@@ -20,6 +20,11 @@
     <uses-feature android:name="android.hardware.camera.front" android:required="false"/>
     <uses-feature android:name="android.hardware.camera.front.autofocus" android:required="false"/>
     
+    <!-- <instrumentation 
+        android:name="android.test.InstrumentationTestRunner"
+    	android:targetPackage="hu.oe.nik.tdxawx.photoselecta"
+    	android:label="Testing" /> -->
+    
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
@@ -27,6 +32,7 @@
         android:theme="@style/AppTheme" 
         android:configChanges="orientation">
         <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/app_facebook_id"/>
+        <!--  <uses-library android:name="android.test.runner" /> -->
         <activity
             android:name="hu.oe.nik.tdxawx.photoselecta.MainActivity"
             android:label="@string/app_name" >

@@ -1,4 +1,4 @@
-package hu.oe.nik.tdxawx.photoselecta.utility;
+package hu.oe.nik.tdxawx.photoselecta.imaging;
 
 import java.io.ByteArrayOutputStream;
 
@@ -32,7 +32,7 @@ public class ImageAnalyzer {
 		this.scaledImage = Bitmap.createScaledBitmap(this.image, scaledWidth, scaledHeight, false);
 	}
 	
-	/*public int detectEdges(CannyEdgeDetector edgeDetector, float lowThreshold, float highThreshold){
+	public int detectEdges(CannyEdgeDetector edgeDetector, float lowThreshold, float highThreshold){
 		edgeDetector.setLowThreshold(lowThreshold);
 		edgeDetector.setHighThreshold(highThreshold);
 		
@@ -40,7 +40,7 @@ public class ImageAnalyzer {
 		edgeDetector.process();
 		
 		return 0;
-	}*/
+	}
 	
 	public byte[] makeResizedImage(int width, int height) {
 	    Bitmap resized = Bitmap.createScaledBitmap(this.image, width, height, false);

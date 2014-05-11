@@ -1,4 +1,4 @@
-package hu.oe.nik.tdxawx.photoselecta.utility;
+package hu.oe.nik.tdxawx.photoselecta.imaging;
 
 import java.util.ArrayList;
 import java.util.Iterator;

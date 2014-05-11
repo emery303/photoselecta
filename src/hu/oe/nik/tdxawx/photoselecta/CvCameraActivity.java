@@ -1,7 +1,7 @@
 package hu.oe.nik.tdxawx.photoselecta;
 
-import hu.oe.nik.tdxawx.photoselecta.utility.ColorBlobDetector;
-import hu.oe.nik.tdxawx.photoselecta.utility.CvImageProcessor;
+import hu.oe.nik.tdxawx.photoselecta.imaging.ColorBlobDetector;
+import hu.oe.nik.tdxawx.photoselecta.imaging.CvImageProcessor;
 import hu.oe.nik.tdxawx.photoselecta.utility.DatabaseManager;
 
 import java.io.File;

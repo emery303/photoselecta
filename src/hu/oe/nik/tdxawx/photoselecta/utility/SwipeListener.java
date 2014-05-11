@@ -1,4 +1,4 @@
-package hu.oe.nik.tdxawx.photoselecta;
+package hu.oe.nik.tdxawx.photoselecta.utility;
 
 import android.app.Application;
 import android.content.Context;
