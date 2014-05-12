@@ -74,7 +74,10 @@ public class DatabaseManager extends SQLiteOpenHelper{
     		  if (cur != null && cur.getCount() > 0) {
     			  cur.moveToFirst();
     			  do {
-    				  result.add(cur.getString(0));
+    				  String path = cur.getString(0); 
+    				  File f = new File(path);
+    				  if (f.exists())
+    					  result.add(path);
     			  } while (cur.moveToNext());
     		  }
     		  return result;
@@ -618,6 +621,7 @@ public class DatabaseManager extends SQLiteOpenHelper{
 				   database.execSQL("INSERT INTO categories (name, description) VALUES ('#Night', '');");
 				   database.execSQL("INSERT INTO categories (name, description) VALUES ('#Sunset', '');");
 				   database.execSQL("INSERT INTO categories (name, description) VALUES ('#Clouds', '');");
+				   database.execSQL("INSERT INTO categories (name, description) VALUES ('#Cars', '');");
 				   database.execSQL("INSERT INTO categories (name, description) VALUES ('Uncategorized', '');");
 		       }
 		       cur2.close();

@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Calendar;
 import java.util.List;
 
 import org.opencv.core.Mat;
@@ -23,33 +24,75 @@ import android.util.Log;
 public class CvImageProcessor {
 
 	private ColorBlobDetector    mDetector;
-	private CascadeClassifier      mJavaDetector;
-    private File                   mCascadeFile;
+	private CascadeClassifier      mJavaFaceDetector;
+    private File mCascadeFile_face;
+    private CascadeClassifier mJavaCarDetector1;
+    private CascadeClassifier mJavaCarDetector2;
+    private CascadeClassifier mJavaCarDetector3;
+    private CascadeClassifier mJavaCarDetector4;
+    private File mCascadeFile_car1;
+    private File mCascadeFile_car2;
+    private File mCascadeFile_car3;
+    private File mCascadeFile_car4;
 	
 	public CvImageProcessor(Context ctx) {
 		mDetector = new ColorBlobDetector();
 		try {
-            // load cascade file from application resources
-            InputStream is = ctx.getResources().openRawResource(R.raw.face);
+            // load cascade files from application resources
+            
+			InputStream is1 = ctx.getResources().openRawResource(R.raw.face);
+			InputStream isc1 = ctx.getResources().openRawResource(R.raw.car1);
+			InputStream isc2 = ctx.getResources().openRawResource(R.raw.car2);
+			InputStream isc3 = ctx.getResources().openRawResource(R.raw.car3);
+			InputStream isc4 = ctx.getResources().openRawResource(R.raw.car4);
             File cascadeDir = ctx.getDir("cascade", Context.MODE_PRIVATE);
-            mCascadeFile = new File(cascadeDir, "face.xml");
-            FileOutputStream os = new FileOutputStream(mCascadeFile);
+            mCascadeFile_face = new File(cascadeDir, "face.xml");
+            mCascadeFile_car1 = new File(cascadeDir, "car1.xml");
+            mCascadeFile_car2 = new File(cascadeDir, "car2.xml");
+            mCascadeFile_car3 = new File(cascadeDir, "car3.xml");
+            mCascadeFile_car4 = new File(cascadeDir, "car4.xml");
+            FileOutputStream os1 = new FileOutputStream(mCascadeFile_face);
+            FileOutputStream osc1 = new FileOutputStream(mCascadeFile_car1);
+            FileOutputStream osc2 = new FileOutputStream(mCascadeFile_car2);
+            FileOutputStream osc3 = new FileOutputStream(mCascadeFile_car3);
+            FileOutputStream osc4 = new FileOutputStream(mCascadeFile_car4);
 
             byte[] buffer = new byte[4096];
             int bytesRead;
-            while ((bytesRead = is.read(buffer)) != -1) {
-                os.write(buffer, 0, bytesRead);
+            while ((bytesRead = is1.read(buffer)) != -1) {
+                os1.write(buffer, 0, bytesRead);
             }
-            is.close();
-            os.close();
+            is1.close();
+            os1.close();
+            
+            while ((bytesRead = isc1.read(buffer)) != -1) { osc1.write(buffer, 0, bytesRead); }
+            isc1.close(); osc1.close();
+            while ((bytesRead = isc2.read(buffer)) != -1) { osc2.write(buffer, 0, bytesRead); }
+            isc2.close(); osc2.close();
+            while ((bytesRead = isc3.read(buffer)) != -1) { osc3.write(buffer, 0, bytesRead); }
+            isc3.close(); osc3.close();
+            while ((bytesRead = isc4.read(buffer)) != -1) { osc4.write(buffer, 0, bytesRead); }
+            isc4.close(); osc4.close();
 
-            mJavaDetector = new CascadeClassifier(mCascadeFile.getAbsolutePath());
-            if (mJavaDetector.empty()) {
+            mJavaFaceDetector = new CascadeClassifier(mCascadeFile_face.getAbsolutePath());
+            if (mJavaFaceDetector.empty()) {
                 Log.e("PS-CASCADE", "Failed to load cascade classifier");
-                mJavaDetector = null;
-            } else
-                Log.i("PS-CASCADE", "Loaded cascade classifier from " + mCascadeFile.getAbsolutePath());
-
+                mJavaFaceDetector = null;
+            }
+            
+            mJavaCarDetector1 = new CascadeClassifier(mCascadeFile_car1.getAbsolutePath());
+            if (mJavaCarDetector1.empty())
+                mJavaCarDetector1 = null;
+            mJavaCarDetector2 = new CascadeClassifier(mCascadeFile_car2.getAbsolutePath());
+            if (mJavaCarDetector2.empty())
+                mJavaCarDetector2 = null;
+            mJavaCarDetector3 = new CascadeClassifier(mCascadeFile_car3.getAbsolutePath());
+            if (mJavaCarDetector3.empty())
+                mJavaCarDetector3 = null;
+            mJavaCarDetector4 = new CascadeClassifier(mCascadeFile_car4.getAbsolutePath());
+            if (mJavaCarDetector4.empty())
+                mJavaCarDetector4 = null;
+            
             cascadeDir.delete();
 
         } catch (IOException e) {
@@ -62,10 +105,21 @@ public class CvImageProcessor {
     	CharSequence cat = "";
     	int smallfacesize = (int)(m.size().height * 0.2);
     	int largefacesize = (int)(m.size().height * 0.5);
+    	int carsize = (int)(m.size().height * 0.35);
     	MatOfRect smallfaces = new MatOfRect();
     	MatOfRect largefaces = new MatOfRect();
-    	mJavaDetector.detectMultiScale(mg, smallfaces, 1.1, 2, 2, new Size(smallfacesize, smallfacesize), new Size());
-    	mJavaDetector.detectMultiScale(mg, largefaces, 1.1, 2, 2, new Size(largefacesize, largefacesize), new Size());
+    	MatOfRect cars1 = new MatOfRect();
+    	MatOfRect cars2 = new MatOfRect();
+    	MatOfRect cars3 = new MatOfRect();
+    	MatOfRect cars4 = new MatOfRect();
+    	// face detection
+    	mJavaFaceDetector.detectMultiScale(mg, smallfaces, 1.1, 2, 2, new Size(smallfacesize, smallfacesize), new Size());
+    	mJavaFaceDetector.detectMultiScale(mg, largefaces, 1.1, 2, 2, new Size(largefacesize, largefacesize), new Size());
+    	// car detection
+    	mJavaCarDetector1.detectMultiScale(mg, cars1, 1.1, 2, 2, new Size(carsize, carsize), new Size());
+    	mJavaCarDetector2.detectMultiScale(mg, cars2, 1.1, 2, 2, new Size(carsize, carsize), new Size());
+    	mJavaCarDetector3.detectMultiScale(mg, cars3, 1.1, 2, 2, new Size(carsize, carsize), new Size());
+    	mJavaCarDetector4.detectMultiScale(mg, cars4, 1.1, 2, 2, new Size(carsize, carsize), new Size());
     	
     	double snow = 0;
     	double sky = 0;
@@ -75,6 +129,7 @@ public class CvImageProcessor {
     	double dark = 0;
     	double sfaces = smallfaces.toArray().length;
     	double lfaces = largefaces.toArray().length;
+    	double tcars = cars1.toArray().length + cars2.toArray().length + cars3.toArray().length + cars4.toArray().length;
     	double earth = 0;
     	double green = 0;
     	String debugtext = "";
@@ -154,10 +209,12 @@ public class CvImageProcessor {
         	cat = "#snow";
 		else if (yellow > 0.2 && red > 0.4)
 			cat = "#sunset";
-		else if (dark > 0.6)
-			cat = "#night";
 		else if (sfaces > 0)
 			cat = "#people";
+		else if (tcars > 1)
+			cat = "#cars";
+		else if (dark > 0.5 && (Calendar.getInstance().get(Calendar.HOUR_OF_DAY) > 21 || Calendar.getInstance().get(Calendar.HOUR_OF_DAY) < 4) )
+			cat = "#night";
         
         return cat;
     }

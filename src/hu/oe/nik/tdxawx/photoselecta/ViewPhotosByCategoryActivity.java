@@ -46,6 +46,7 @@ public class ViewPhotosByCategoryActivity extends Activity {
 	private ScrollView container;
 	private ProgressBar progress;
 	private TextView progresstext;
+	private TextView progresstextbar;
 	Typeface HelveticaNeueCB;
 	
 	private boolean showUncategorized;
@@ -57,7 +58,9 @@ public class ViewPhotosByCategoryActivity extends Activity {
 		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		HelveticaNeueCB = Typeface.createFromAsset(getAssets(), "HelveticaNeue-CondensedBold.ttf");
 		container = (ScrollView)findViewById(R.id.categoryphotocontainer);
-		progress = (ProgressBar)findViewById(R.id.catphotos_loading);
+		//progress = (ProgressBar)findViewById(R.id.catphotos_loading);
+		progresstextbar = (TextView)findViewById(R.id.catphotos_loadingbar);
+		progresstextbar.setScaleX(0.0f);
 		progresstext = (TextView)findViewById(R.id.catphotos_loadingtext);
 		progresstext.setTypeface(HelveticaNeueCB);
 		
@@ -111,6 +114,13 @@ public class ViewPhotosByCategoryActivity extends Activity {
         				}
         				hscv.addView(ll);
         				layout.addView(hscv);
+        				final float progress = ((float)i / (float)categories.length);
+            			runOnUiThread(new Runnable(){ 
+                			@Override
+                			public void run() {
+                				progresstextbar.setScaleX(progress);
+                			}
+                		});
         			}
         		}
         		
@@ -118,7 +128,7 @@ public class ViewPhotosByCategoryActivity extends Activity {
         			@Override
         			public void run() {
         				Animation fadein = AnimationUtils.loadAnimation(ViewPhotosByCategoryActivity.this, R.anim.fadein);
-        				progress.setVisibility(View.INVISIBLE);
+        				progresstextbar.setVisibility(View.INVISIBLE);
         				progresstext.setVisibility(View.INVISIBLE);
         				container.addView(layout);
         				container.setVisibility(View.VISIBLE);

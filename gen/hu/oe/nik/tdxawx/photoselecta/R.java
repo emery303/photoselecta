@@ -302,7 +302,7 @@ containing a value of this type.
         public static final int camsurface=0x7f070010;
         public static final int categoryphotocontainer=0x7f07004b;
         public static final int categorytext=0x7f07002f;
-        public static final int catphotos_loading=0x7f070049;
+        public static final int catphotos_loadingbar=0x7f070049;
         public static final int catphotos_loadingtext=0x7f07004a;
         public static final int com_facebook_body_frame=0x7f070025;
         public static final int com_facebook_button_xout=0x7f070027;
@@ -415,8 +415,12 @@ containing a value of this type.
         public static final int photo_item_menu=0x7f0c0001;
     }
     public static final class raw {
-        public static final int face=0x7f060000;
-        public static final int shutter=0x7f060001;
+        public static final int car1=0x7f060000;
+        public static final int car2=0x7f060001;
+        public static final int car3=0x7f060002;
+        public static final int car4=0x7f060003;
+        public static final int face=0x7f060004;
+        public static final int shutter=0x7f060005;
     }
     public static final class string {
         public static final int action_settings=0x7f0a001c;

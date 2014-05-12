@@ -164,19 +164,17 @@ public class AnalyzerActivity extends Activity {
     @Override
     public boolean onContextItemSelected(MenuItem item) {
     	AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
+    	final DatabaseManager db = new DatabaseManager(getApplicationContext());
+    	final int photo_id = info.targetView.getId();
+    	final String _path = db.getPhotoPathById(photo_id);
     	if (item.getItemId() == 0) {
-    		DatabaseManager db = new DatabaseManager(getApplicationContext());
-    		final int photo_id = info.targetView.getId();
-    		String _path = db.getPhotoPathById(photo_id);
     		Intent viewphoto = new Intent(AnalyzerActivity.this, FullscreenPhotoActivity.class);
     		viewphoto.putExtra("path", _path);
     		startActivityForResult(viewphoto, 1);
     	}
     	if (item.getItemId() == 1) {
-    		final int photo_id = info.targetView.getId();
     		
     		//--- tag list ---
-            final DatabaseManager db = new DatabaseManager(getApplicationContext());
             final CharSequence[] alltags = db.getTags();
             final CharSequence[] currentTags = db.getTagsByPhotoId(photo_id);
 
@@ -218,7 +216,7 @@ public class AnalyzerActivity extends Activity {
 								assigned++;
 							}
 						}
-						Toast.makeText(AnalyzerActivity.this, "Successfully assigned "+assigned+" tags.", Toast.LENGTH_LONG).show();
+						Toast.makeText(AnalyzerActivity.this, "Successfully assigned "+assigned+" tag(s).", Toast.LENGTH_LONG).show();
 						dialog.dismiss();
 					}
 				}
@@ -228,11 +226,9 @@ public class AnalyzerActivity extends Activity {
 
     	}
     	if (item.getItemId() == 2) {
-    		DatabaseManager db = new DatabaseManager(getApplicationContext());
-    		db.deletePhotoById(info.targetView.getId());
+    		db.deletePhotoByPath(_path);
     		info.targetView.startAnimation( AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fadeout));
     		info.targetView.setVisibility(View.INVISIBLE);
-    		db.CloseDB();
     		Toast.makeText(AnalyzerActivity.this, "Photo discarded.", Toast.LENGTH_SHORT).show();
     	}
     	return super.onContextItemSelected(item);

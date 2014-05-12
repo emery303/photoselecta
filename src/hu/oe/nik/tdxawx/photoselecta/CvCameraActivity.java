@@ -14,6 +14,7 @@ import java.util.List;
 
 import org.opencv.android.BaseLoaderCallback;
 import org.opencv.android.CameraBridgeViewBase.CvCameraViewFrame;
+import org.opencv.android.JavaCameraView;
 import org.opencv.android.LoaderCallbackInterface;
 import org.opencv.android.OpenCVLoader;
 import org.opencv.core.Core;
@@ -35,8 +36,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.graphics.Typeface;
+import android.graphics.drawable.GradientDrawable.Orientation;
 import android.hardware.Camera;
+import android.hardware.Camera.CameraInfo;
 import android.hardware.Camera.PictureCallback;
 import android.hardware.Camera.ShutterCallback;
 import android.media.MediaPlayer;
@@ -44,6 +48,8 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.view.OrientationEventListener;
+import android.view.Surface;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -54,7 +60,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class CvCameraActivity extends Activity implements /*OnTouchListener,*/ CvCameraViewListener2 {
+public class CvCameraActivity extends Activity implements CvCameraViewListener2 {
 
     //private boolean              mIsColorSelected = false;
     private Mat mRgba;
@@ -67,6 +73,8 @@ public class CvCameraActivity extends Activity implements /*OnTouchListener,*/ C
     private Scalar               CONTOUR_COLOR;
     private File                   mCascadeFile;
     private CascadeClassifier      mJavaDetector;
+    
+    private int _orientation;
     
     private CvImageProcessor proc;
     
@@ -122,6 +130,20 @@ public class CvCameraActivity extends Activity implements /*OnTouchListener,*/ C
 
         mOpenCvCameraView = (CameraBridgeViewBase) findViewById(R.id.cvcamsurface);
         mOpenCvCameraView.setCvCameraViewListener(this);
+        OrientationEventListener oel = new OrientationEventListener(getApplicationContext()) {
+			@Override
+			public void onOrientationChanged(int orientation) {
+				if ((orientation > 350 && orientation <= 359) || (orientation >= 0 && orientation < 10))
+					_orientation = 0;
+				if (orientation > 80 && orientation < 100)
+					_orientation = 90;
+				if (orientation > 170 && orientation < 190)
+					_orientation = 180;
+				if (orientation > 260 && orientation < 280)
+					_orientation = 270;
+			}
+		};
+		oel.enable();
         
         Button btn_shutter = (Button)findViewById(R.id.btn_shutter);
         Typeface HelveticaNeueCB = Typeface.createFromAsset(getAssets(), "HelveticaNeue-CondensedBold.ttf");
@@ -331,4 +353,5 @@ public class CvCameraActivity extends Activity implements /*OnTouchListener,*/ C
     	    }
     	});
     }
+
 }

@@ -4,14 +4,24 @@
        android:layout_height="fill_parent"
        android:background="#395898"
        xmlns:android="http://schemas.android.com/apk/res/android">
-       <ProgressBar
+       <!-- <ProgressBar
         android:id="@+id/catphotos_loading"
         style="@android:style/Widget.ProgressBar.Large"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true" 
-        />
+        /> -->
+       <TextView
+           android:id="@+id/catphotos_loadingbar"
+           android:text=""
+           android:layout_width="256dp"
+           android:layout_height="24dp"
+           android:background="#ffffff"
+           android:textSize="24sp"
+           android:layout_centerHorizontal="true"
+           android:layout_centerVertical="true" 
+           />
        <TextView
            android:id="@+id/catphotos_loadingtext"
            android:text="Loading..."
@@ -19,7 +29,7 @@
            android:layout_height="wrap_content"
            android:textColor="#ffffff"
            android:textSize="24sp"
-           android:layout_below="@id/catphotos_loading"
+           android:layout_below="@id/catphotos_loadingbar"
            android:layout_centerHorizontal="true"
            android:layout_marginTop="10dp"
            />

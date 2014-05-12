@@ -13,6 +13,7 @@ import android.graphics.Bitmap;
 import android.graphics.PixelFormat;
 import android.graphics.Typeface;
 import android.hardware.Camera;
+import android.hardware.Camera.CameraInfo;
 import android.hardware.Camera.PictureCallback;
 import android.hardware.Camera.ShutterCallback;
 import android.media.MediaPlayer;
@@ -21,6 +22,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.LayoutInflater;
+import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
@@ -101,6 +103,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 	@Override
 	public void surfaceChanged(SurfaceHolder holder, int format, int width,
 			int height) {
+		//setCameraDisplayOrientation();
 		_cam.startPreview();
 	}
 	
@@ -176,5 +179,26 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 			//Toast.makeText(CameraActivity.this, "RAW image taken", Toast.LENGTH_SHORT).show();
 		}
 	};
+	
+	private void setCameraDisplayOrientation() {
+		
+		CameraInfo ci = new CameraInfo();
+		Camera.getCameraInfo(0, ci);
+	
+	   int rotation = getWindowManager().getDefaultDisplay().getRotation();
+	   int degrees = 0;
+	
+	   switch (rotation) {
+	       case Surface.ROTATION_0: degrees = 0; break;
+	       case Surface.ROTATION_90: degrees = 90; break;
+	       case Surface.ROTATION_180: degrees = 180; break;
+	       case Surface.ROTATION_270: degrees = 270; break;
+	   }
+	
+	   int result;
+	   result = (ci.orientation - degrees + 360) % 360;
+	
+	   _cam.setDisplayOrientation(result);
+	}
 	
 }
